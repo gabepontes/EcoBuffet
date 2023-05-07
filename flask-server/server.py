@@ -129,32 +129,53 @@ def add_item():
 
     return jsonify({"message": "Item added successfully", "id": new_id}), 201
 
+@app.route("/items")
+def get_items():
+    items_data = items_ref.get()
+    if items_data is None:
+        return jsonify([])
+    items_list = [item for item in items_data if item is not None]
+    return jsonify(items_list)
 
 
-@app.route("/edit_item", methods=["POST"])
-def edit_item():
-    item = request.get_json()
+@app.route("/edit_item/<item_id>", methods=["PUT"])
+def edit_item(item_id):
+    name = request.form.get("name")
+    description = request.form.get("description")
+    image = request.files.get("image")
 
-    if "id" not in item or "name" not in item or "image" not in item or "description" not in item:
-        return jsonify({"status": "error", "message": "Item must have an id, name, image, and description"}), 400
+    if not name or not description:
+        return jsonify({"status": "error", "message": "Item must have a name and description"}), 400
 
-    item_id = item["id"]
+    item_data = {"name": name, "description": description}
+
+    if image:
+        # Generate a unique filename for the uploaded image
+        filename = secure_filename(image.filename)
+        filename = f"{uuid.uuid4()}_{filename}"
+
+        # Save the image to the 'uploads' folder
+        image.save(os.path.join("uploads", filename))
+
+        item_data["image"] = filename
 
     if items_ref.child(item_id).get() is not None:
-        items_ref.child(item_id).update(item)
-        return jsonify({"status": "success", "item": item})
+        items_ref.child(item_id).update(item_data)
+        return jsonify({"status": "success", "item": item_data})
     else:
         return jsonify({"status": "error", "message": f"Item with id {item_id} not found"}), 404
 
-@app.route("/remove_item", methods=["POST"])
-def remove_item():
-    item_id = request.get_json()["id"]
-
+@app.route("/remove_item/<string:item_id>", methods=["DELETE"])
+def remove_item(item_id):
     if items_ref.child(item_id).get() is not None:
         items_ref.child(item_id).delete()
         return jsonify({"status": "success", "id": item_id})
     else:
         return jsonify({"status": "error", "message": f"Item with id {item_id} not found"}), 404
+
+
+
+
 
 if __name__ == "__main__":
     socketio.run(app, debug=True)
