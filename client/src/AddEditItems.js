@@ -79,6 +79,7 @@ const confirmRemoveItem = async () => {
 
     if (response.data.status === "success") {
       alert("Item removed successfully!");
+      setItems(items.filter(item => item.id !== itemToRemove.id)); // Update the items list after successful deletion
       fetchItems();
     } else {
       alert("Error: " + response.data.message);
@@ -89,8 +90,6 @@ const confirmRemoveItem = async () => {
   }
   setItemToRemove(null);
 };
-
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -149,9 +148,9 @@ const confirmRemoveItem = async () => {
           </button>
         </div>
         {tab === "add" && (
-          <form onSubmit={handleSubmit} className="mt-4">
+          <form onSubmit={handleSubmit} className="mt-4 space-y-4">
             <div>
-              <label htmlFor="name" className="block mb-1">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                 Name:
               </label>
               <input
@@ -162,8 +161,8 @@ const confirmRemoveItem = async () => {
                 className="w-full p-2 border border-gray-300 rounded-md"
               />
             </div>
-            <div className="mt-4">
-              <label htmlFor="description" className="block mb-1">
+            <div>
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700">
                 Description:
               </label>
               <textarea
@@ -173,181 +172,121 @@ const confirmRemoveItem = async () => {
                 className="w-full p-2 border border-gray-300 rounded-md"
               />
             </div>
-            <div className="mt-4">
-              <label htmlFor="image" className="block mb-1">
-Image:
-</label>
-<input
-             type="file"
-             id="image"
-             accept="image/*"
-             onChange={onFileChange}
-             className="w-full p-2 border border-gray-300 rounded-md"
-           />
-</div>
-<button type="submit" className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md">
-Submit
-</button>
-</form>
-)}
-{tab === "edit" && (
-<div className="mt-4">
-{tab === "edit" && (
-  <div className="mt-4">
-    <h3>Select an item to edit:</h3>
-    {items.map((item) => (
-      <button
-        key={item.id}
-        onClick={() => handleSelectItem(item)}
-        className="bg-gray-200 text-black rounded p-2 m-2"
-      >
-        {item.name}
-      </button>
-    ))}
-    {selectedItem && (
-  <div className="mt-4">
-    <label htmlFor="editName" className="block mb-2">
-      Name:
-    </label>
-    <input
-      type="text"
-      id="editName"
-      value={editName}
-      onChange={(e) => setEditName(e.target.value)}
-      className="border rounded p-2 w-full"
-    />
-    <label htmlFor="editDescription" className="block mb-2 mt-4">
-      Description:
-    </label>
-    <textarea
-      id="editDescription"
-      value={editDescription}
-      onChange={(e) => setEditDescription(e.target.value)}
-      className="border rounded p-2 w-full"
-    />
-    <label htmlFor="editImage" className="block mb-2 mt-4">
-      Image:
-    </label>
-    <div className="mb-2">
-      <input
-        type="file"
-        id="editImage"
-        onChange={(e) => setEditImage(e.target.files[0])}
-        className="hidden"
-      />
-      <label
-        htmlFor="editImage"
-        className="bg-blue-500 text-white px-4 py-2 cursor-pointer rounded"
-      >
-        Choose File
-      </label>
-      <div className="mt-2">
-        <img
-          src={
-            editImage
-              ? URL.createObjectURL(editImage)
-              : `http://localhost:5000/uploads/${selectedItem.image}`
-          }
-          alt={selectedItem.name}
-          className="max-w-xs"
-        />
-      </div>
-    </div>
-    <button
-      type="button"
-      onClick={handleUpdateItem}
-      className="bg-green-600 text-white rounded mt-2 p-2"
-    >
-      Update Item
-    </button>
-  </div>
-)}
-
-  
-    
-  </div>
-)}
-
-
-
-
-</div>
-)}
-{itemToRemove && (
-  <div
-    className="fixed z-10 inset-0 overflow-y-auto"
-    aria-labelledby="modal-title"
-    role="dialog"
-    aria-modal="true"
-  >
-    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-      <div
-        className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-        aria-hidden="true"
-      ></div>
-      <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
-        &#8203;
-      </span>
-      <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-        <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-          <div className="sm:flex sm:items-start">
-            <div className="mt-3 text-center sm:mt-0 sm:text-left">
-              <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                Are you sure you want to remove this item?
-              </h3>
-              <div className="mt-2">
-                <p className="text-sm text-gray-500">
-                  <strong>Name:</strong> {itemToRemove.name}
-                </p>
-                <p className="text-sm text-gray-500">
-                  <strong>Description:</strong> {itemToRemove.description}
-                </p>
-              </div>
+            <div>
+              <label htmlFor="image" className="block text-sm font-medium text-gray-700">
+                Image:
+              </label>
+              <input
+                type="file"
+                id="image"
+                accept="image/*"
+                onChange={onFileChange}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
             </div>
+            <button type="submit" className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md">
+              Submit
+            </button>
+          </form>
+        )}
+        {tab === "edit" && (
+          <div className="mt-4">
+            <h3 className="text-lg font-semibold mb-2">Select an item to edit:</h3>
+            <div className="flex flex-wrap gap-2">
+              {items.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => handleSelectItem(item)}
+                  className="bg-gray-200 text-black rounded p-2"
+                >
+                  {item.name}
+                </button>
+              ))}
+            </div>
+            {selectedItem && (
+              <div className="mt-4 space-y-4">
+                <label htmlFor="editName" className="block text-sm font-medium text-gray-700">
+                Name:
+                </label>
+                <input
+                  type="text"
+                  id="editName"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                />
+                <label htmlFor="editDescription" className="block text-sm font-medium text-gray-700">
+                  Description:
+                </label>
+                <textarea
+                  id="editDescription"
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                />
+                <label htmlFor="editImage" className="block text-sm font-medium text-gray-700">
+                  Image:
+                </label>
+                <input
+                  type="file"
+                  id="editImage"
+                  accept="image/*"
+                  onChange={(e) => setEditImage(e.target.files[0])}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                />
+                <button onClick={handleUpdateItem} className="bg-blue-600 text-white px-4 py-2 rounded-md">
+                  Update
+                </button>
+              </div>
+            )}
           </div>
-        </div>
-        <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-          <button
-            type="button"
-            className="bg-red-600 text-white rounded p-2 m-2"
-            onClick={confirmRemoveItem}
-          >
-            Remove
-          </button>
-          <button
-            type="button"
-            className="bg-gray-600 text-white rounded p-2 m-2"
-            onClick={() => setItemToRemove(null)}
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
-
+        )}
 {tab === "remove" && (
   <div className="mt-4">
-    <h3>Select an item to remove:</h3>
-    {items.map((item) => (
-      <button
-        key={item.id}
-        onClick={() => handleRemoveItem(item)}
-        className="bg-red-600 text-white rounded p-2 m-2"
-      >
-        {item.name}
-      </button>
-    ))}
+    <h3 className="text-lg font-semibold mb-2">Select an item to remove:</h3>
+    <div className="flex flex-wrap gap-2">
+      {items.map((item) => (
+        <button
+          key={item.id}
+          onClick={() => handleRemoveItem(item)}
+          className="bg-red-500 text-white rounded p-2"
+        >
+          {item.name}
+        </button>
+      ))}
+    </div>
+    {itemToRemove && (
+      <div className="mt-4 bg-white p-4 rounded-lg shadow-md">
+        <h4 className="text-lg font-semibold mb-2">{itemToRemove.name}</h4>
+        <p className="text-sm mb-2">
+          <span className="font-semibold">Description: </span>
+          {itemToRemove.description}
+        </p>
+        <div className="mb-4">
+          <span className="font-semibold">Image: </span>
+          <img
+            src={`http://localhost:5000/uploads/${itemToRemove.image}`}
+            alt={itemToRemove.name}
+            className="w-48 h-32 object-cover rounded"
+          />
+        </div>
+        <button
+          onClick={confirmRemoveItem}
+          className="bg-red-600 text-white px-4 py-1 rounded"
+        >
+          Confirm Remove
+        </button>
+      </div>
+    )}
   </div>
 )}
 
 
 
-
-</div>
-</div>
-);
+      </div>
+    </div>
+  );
 };
 
 export default AddEditItems;
+

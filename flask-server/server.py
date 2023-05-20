@@ -115,7 +115,9 @@ def add_item():
     if items is None:
         new_id = "1"
     else:
-        new_id = str(max([int(item['id']) for item in items if item is not None and item['id'] is not None]) + 1)
+        new_id = str(max([int(item['id']) for item in items if item is not None]) + 1)
+
+
 
     # Save the new item data to the database
     items_ref.child(new_id).set({
