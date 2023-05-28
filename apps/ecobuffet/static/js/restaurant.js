@@ -7,6 +7,7 @@ function init() {
     self.data = {
         restaurants: [],
         items: [],
+        formatted_items: [],
         restaurant_id: null
     };
 
@@ -21,28 +22,65 @@ function init() {
         self.data.restaurant_id = restaurant_id;
         axios.get(get_items_url, {params: {restaurant_id: self.data.restaurant_id}}).then(function (response) {
             self.data.items = self.enumerate(response.data.items);
+            self.get_formatted_items();
+            console.log(self.data.items)
         });
     };
 
-    self.like_item = function(item) {
+    self.like_item = function(item_idx) {
         // Perform liking the item
+        item = self.data.items[item_idx]
         axios.post(like_item_url, {item_id: item.id})
             .then(function(response) {
                 // Update the likes for this item in the data array
-                var likedItem = self.data.items.find(i => i.id === item.id);
-                if (likedItem) likedItem.likes = response.data.likes;
+                var likedItem = self.data.items[item_idx];
+                likedItem.likes = response.data.likes;
             });
     };
 
-    self.dislike_item = function(item) {
+    self.dislike_item = function(item_idx) {
         // Perform disliking the item
+        item = self.data.items[item_idx]
         axios.post(dislike_item_url, {item_id: item.id})
             .then(function(response) {
                 // Update the dislikes for this item in the data array
-                var dislikedItem = self.data.items.find(i => i.id === item.id);
-                if (dislikedItem) dislikedItem.dislikes = response.data.dislikes;
+                var dislikedItem = self.data.items[item_idx];
+                dislikedItem.dislikes = response.data.dislikes;
             });
     };
+
+    self.get_formatted_items = function() {
+        // Get arrays of COLUMN_SIZE to iterate over. We want the array to look like
+        // [[1, 2, 3], [1, 4, 5], [7, 8]] so it can be displayed like...
+        // ---------
+        // [1, 2, 3]
+        // [1, 4, 5]
+        // [7, 8, null]
+        // ---------
+        // for a column size of 3
+        COLUMN_SIZE = 4;
+        column_tracker = 0;
+        let arr = []
+        for (idx in self.data.items) {
+            arr.push(idx)
+            column_tracker += 1;
+            if (column_tracker % COLUMN_SIZE == 0) {
+                self.data.formatted_items.push(arr);
+                arr = []
+            }
+            // Enter in the last array if it matches the last index.
+            // Fill the remainder of the array with null values so
+            // we can create placeholder tiles to look nice :).
+            else if (idx == self.data.items.length - 1) {
+                console.log("Entering in remaining items!")
+                while (arr.length != COLUMN_SIZE) {
+                    arr.push(null)
+                }
+                self.data.formatted_items.push(arr);
+            }
+        }
+        console.log(self.data.formatted_items)
+    }
 
     // This contains all the methods.
     self.methods = {
@@ -64,7 +102,7 @@ function init() {
         self.vue.restaurants = self.enumerate(response.data.restaurants);
         console.log("Starting Restaurant App!")
     });
-    
+
     self.display_menu()
 
     return self;

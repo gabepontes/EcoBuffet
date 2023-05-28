@@ -1,12 +1,29 @@
 [[extend 'layout.html']]
 <div class="section" id="vue-target" v-cloak>
     <div class="box">
-        <h1>Menu</h1>
-        <div v-for="item in items">
-            <!-- Iterates through all the restaurants -->
-            <div class="box">
-                <!-- Link to the restaurant's page. -->
-                <a>{{item.name}}</a>
+        <h1 class="title has-text-centered">Menu</h1>
+        <div class="tile-ancestor">
+            <!-- Generate a menu of items in a grid -->
+            <div class="tile is-parent" v-for="group in formatted_items">
+                <div class="tile is-child is-vertical" v-for="idx in group">
+                    <div v-if="idx != null">
+                        <div class="box is-shadowless">
+                            <!-- Generate a single item in a nice format. -->
+                            <!-- Encapsulate each element in a tile. -->
+                            <!-- Buttons to like/dislike the item. -->
+                            <div class="tile level">
+                                <span class="tile title is-5 level-item">{{items[idx].name}}</span>
+                                <a class="button is-success is-light level-item block m-0" @click="like_item(idx)">Like</a>
+                                <a class="button is-danger is-light level-item block m-0" @click="dislike_item(idx)">Dislike</a>
+
+                            </div>
+                            <figure class="image is-4by3 tile">
+                                <img :src="items[idx].image" class="tile has-text-centered">{{items[idx].image}}</img>
+                            </figure>
+                            <div class="box tile">{{items[idx].description}}</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

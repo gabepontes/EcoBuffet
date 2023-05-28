@@ -120,20 +120,22 @@ def remove_item(item_id=None):
         redirect(URL('index'))
 
 # Action to like an item
-@action('like_item/<item_id:int>')
+@action('like_item', method="POST")
 @action.uses(db, auth.user)
-def like_item(item_id=None):
-    assert item_id is not None
+def like_item():
+    item_id = request.json.get("item_id")
     db(db.item.id == item_id).update(likes=db.item.likes+1)
-    return {"status": "success", "message": "Item liked successfully"}
+    likes = db(db.item.id == item_id).select().as_list()[0]["likes"]
+    return dict(status="success",message="Item liked successfully",likes=likes)
 
 # Action to dislike an item
-@action('dislike_item/<item_id:int>')
+@action('dislike_item', method="POST")
 @action.uses(db, auth.user)
-def dislike_item(item_id=None):
-    assert item_id is not None
+def dislike_item():
+    item_id = request.json.get("item_id")
     db(db.item.id == item_id).update(dislikes=db.item.dislikes+1)
-    return {"status": "success", "message": "Item disliked successfully"}
+    dislikes = db(db.item.id == item_id).select().as_list()[0]["dislikes"]
+    return dict(status="success",message="Item disliked successfully",dislikes=dislikes )
 
 @action('dashboard')
 @action.uses('dashboard.html', db, auth.user, url_signer)

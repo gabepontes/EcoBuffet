@@ -33,11 +33,11 @@ db.define_table(
 
 db.define_table(
     "item",
-#    Field('image', 'upload', default='uploads/default_item.png'),
     Field("name", "text"),
     Field("description", "text"),
     Field('image', 'upload'),
     Field("restaurant_id", "reference restaurant"),
+    Field('image', 'upload', default='uploads/default_item.png'),
     Field('likes', 'integer', default=0),
     Field('dislikes', 'integer', default=0),
 )
