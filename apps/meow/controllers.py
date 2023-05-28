@@ -24,8 +24,8 @@ def index():
         add_items_url = URL("add_items", 'index', signer=url_signer),
         edit_items_url = URL("edit_items", 'index', signer=url_signer),
         remove_items_url = URL("remove_items", 'index', signer=url_signer),
-        like_item_url = URL("like_item", 'index', signer=url_signer),
-        dislike_item_url = URL("dislike_item", 'index', signer=url_signer),
+        like_item_url = URL("like_item", signer=url_signer),
+        dislike_item_url = URL("dislike_item", signer=url_signer),
     )
 
 
@@ -50,9 +50,10 @@ def restaurant_page(restaurant_id=None):
     assert restaurant_id is not None
     return dict(
         get_items_url = URL('get_items', vars=dict(restaurant_id=restaurant_id), signer=url_signer),
+        like_item_url = URL("like_item", signer=url_signer),
+        dislike_item_url = URL("dislike_item", signer=url_signer),
         restaurant_id = restaurant_id
     )
-
 
 # Adjust the get_items action to accept a restaurant_id parameter.
 @action('get_items')

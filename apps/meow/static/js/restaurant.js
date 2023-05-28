@@ -62,7 +62,10 @@ function init() {
     // such as getting data from server
     axios.get(get_restaurants_url).then(function(response) {
         self.vue.restaurants = self.enumerate(response.data.restaurants);
+        console.log("Starting Restaurant App!")
     });
+
+    self.display_menu()
 
     return self;
 };

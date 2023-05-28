@@ -5,7 +5,9 @@
      display: none;
 }
 </style>
-
+<template>
+  <router-view/>
+</template>
 <div class="section" id="vue-target" v-cloak>
   <!-- Put here your Vue.js template -->
   <div class="box">
@@ -14,7 +16,7 @@
       <!-- Iterates through all the restaurants -->
       <div class="box">
         <!-- Link to the restaurant's page. -->
-        <a :href="'/restaurants/' + restaurant.id">{{restaurant.name}}</a>
+        <a :href="'/meow/restaurants/' + restaurant.id">{{restaurant.name}}</a>
       </div>
     </div>
   </div>
@@ -24,6 +26,8 @@
 <!-- Loads the index-specific js for Vue -->
 <script>
   let get_restaurants_url = "[[=XML(get_restaurants_url)]]";
+  let like_item_url = "[[=XML(like_item_url)]]";
+  let dislike_item_url = "[[=XML(disklike_item_url)]]";
 </script>
 
 <script src="js/axios.js"></script>

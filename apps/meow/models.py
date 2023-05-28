@@ -71,7 +71,18 @@ FOOD_DESCRIPTIONS = ["Italian style pizza", "Cheeseburger with fries", "Pasta wi
                      "Fresh sushi platter", "Healthy green salad", "Hot chicken soup", "Grilled steak with vegetables", 
                      "Mexican tacos", "Grilled fish with lemon", "Fried chicken"]
 
+# To clear out the database locked error, restart server while having the testing code commented out.
+# To clear out the '_thread._local' object has no attribute 'request_ctx' error, clear the database + restart server.
+def clear_databases():
+    db(db.restaurant).delete()
+    db(db.item).delete()
+    db(db.day_by_day).delete()
+    db(db.customization).delete()
+    db(db.preference).delete()
+
+
 def add_restaurants_for_testing(num_restaurants, num_items_per_restaurant):
+    clear_databases()
     # Add num_restaurants to restaurant database.
     for n in range(num_restaurants):
         m = dict(
@@ -92,5 +103,5 @@ def add_restaurants_for_testing(num_restaurants, num_items_per_restaurant):
     db.commit()
 
 # # Create 5 restaurants each with 10 items
-# add_restaurants_for_testing(5, 10)
+add_restaurants_for_testing(5, 10)
 
