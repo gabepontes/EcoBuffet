@@ -9,6 +9,17 @@
   <router-view/>
 </template>
 <div class="section" id="vue-target" v-cloak>
+  <!-- Button for Dark/Light Mode-->
+  <div class="field has-addons">
+    <div class="control">
+      <button class="button is-dark" v-on:click="toggle_light_mode" v-if="light_mode == true">
+        <span class="icon is-small"><i class="fa fa-moon-o"></i></span>
+      </button>
+      <button class="button is-light" v-on:click="toggle_light_mode" v-else>
+        <span class="icon is-small"><i class="fa fa-sun-o"></i></span>
+      </button>
+    </div>
+  </div>
   <!-- Put here your Vue.js template -->
   <div class="box">
     <div>Restaurants</div>
