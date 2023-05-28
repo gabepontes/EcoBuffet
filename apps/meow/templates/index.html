@@ -11,35 +11,22 @@
   <div class="box">
     <div>Restaurants</div>
     <div v-for="restaurant in restaurants">
-      <!--- Iterates through all the restaurants -->
-      <div class="box" @click="display_menu(restaurant)">
-        {{restaurant.name}}
-      </div>
-    </div>
-    <div v-if="restaurant_id != null">
-      <div v-for="item in items">
-        <!-- Item boxes. -->
-        <div class="box">
-          <!-- This div should be an img but we don't have imgs right now so... -->
-          <div class="box">
-            {{item.name}}
-          </div>
-          {{item.description}}
-        </div>
+      <!-- Iterates through all the restaurants -->
+      <div class="box">
+        <!-- Link to the restaurant's page. -->
+        <a :href="'/restaurants/' + restaurant.id">{{restaurant.name}}</a>
       </div>
     </div>
   </div>
 </div>
 
-
 [[block page_scripts]]
 <!-- Loads the index-specific js for Vue -->
 <script>
-  let get_items_url = "[[=XML(get_items_url)]]";
   let get_restaurants_url = "[[=XML(get_restaurants_url)]]";
-  let add_items_url = "[[=XML(add_items_url)]]";
-  let edit_items_url = "[[=XML(edit_items_url)]]";
-  let remove_items_url = "[[=XML(remove_items_url)]]";
 </script>
+
+<script src="js/axios.js"></script>
+<script src="js/sugar.js"></script>
 <script src="js/index.js"></script>
 [[end]]

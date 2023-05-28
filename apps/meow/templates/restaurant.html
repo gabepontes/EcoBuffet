@@ -1,0 +1,14 @@
+[[extend 'layout.html']]
+
+<div class="section" id="vue-target" v-cloak>
+    <div class="box">
+        <h1>[[= restaurant.name ]]</h1>
+        <p>[[= restaurant.description ]]</p>
+    </div>
+</div>
+
+[[block page_scripts]]
+<script src="js/axios.js"></script>
+<script src="js/sugar.js"></script>
+<script src="js/restaurant.js"></script>
+[[end]]

@@ -10,7 +10,7 @@ from .common import db, session, T, cache, auth, logger, authenticated, unauthen
 from py4web.utils.url_signer import URLSigner
 from .models import get_username
 from werkzeug.utils import secure_filename
-
+from .models import add_restaurants_for_testing
 url_signer = URLSigner(session)
 
 # Py4web actions.
@@ -19,12 +19,16 @@ url_signer = URLSigner(session)
 def index():
     return dict(
         # Signed URLs
-        get_items_url = URL('get_items', signer=url_signer),
-        get_restaurants_url = URL("get_restaurants",signer=url_signer),
-        add_items_url = URL("add_items",signer=url_signer),
-        edit_items_url = URL("edit_items",signer=url_signer),
-        remove_items_url = URL("remove_items",signer=url_signer)
+        get_restaurants_url = URL("get_restaurants", signer=url_signer),
+        get_items_url = URL("get_items", signer=url_signer), 
+        add_items_url = URL("add_items", 'index', signer=url_signer),
+        edit_items_url = URL("edit_items", 'index', signer=url_signer),
+        remove_items_url = URL("remove_items", 'index', signer=url_signer),
+        like_item_url = URL("like_item", 'index', signer=url_signer),
+        dislike_item_url = URL("dislike_item", 'index', signer=url_signer),
     )
+
+
 
 # Get a list of all of the restaurants.
 @action("get_restaurants")
@@ -33,12 +37,24 @@ def get_restaurants():
     restaurants = db(db.restaurant).select().as_list()
     return dict(restaurants=restaurants)
 
-# Get the list of reference ids to all of the items the restaurant has.
-@action("get_items")
-@action.uses(db, auth.user)
-def get_items(restaurant_id=None):
-    assert restaurant_id != None
-    items = db(db.item.restaurant_id == restaurant_id).select().as_list()
+# Define a new action to handle restaurant-specific URLs.
+@action('restaurants/<restaurant_id:int>')
+@action.uses('restaurant.html', db, auth.user, url_signer)
+def restaurant_page(restaurant_id=None):
+    assert restaurant_id is not None
+    return dict(
+        get_items_url = URL('get_items', vars=dict(restaurant_id=restaurant_id), signer=url_signer),
+        restaurant_id = restaurant_id
+    )
+
+
+# Adjust the get_items action to accept a restaurant_id parameter.
+@action('get_items')
+@action.uses(db, auth.user, url_signer.verify())
+def get_items():
+    restaurant_id = request.params.get('restaurant_id')
+    print(f"restaurant_id: {restaurant_id}")
+    items = db(db.item.restaurant_id == int(restaurant_id)).select().as_list()
     return dict(items=items)
 
 # Add a new item to the overall item database.
@@ -96,3 +112,19 @@ def remove_item(item_id=None):
     else:
         db(db.item.id == item_id).delete()
         redirect(URL('index'))
+
+# Action to like an item
+@action('like_item/<item_id:int>')
+@action.uses(db, auth.user)
+def like_item(item_id=None):
+    assert item_id is not None
+    db(db.item.id == item_id).update(likes=db.item.likes+1)
+    return {"status": "success", "message": "Item liked successfully"}
+
+# Action to dislike an item
+@action('dislike_item/<item_id:int>')
+@action.uses(db, auth.user)
+def dislike_item(item_id=None):
+    assert item_id is not None
+    db(db.item.id == item_id).update(dislikes=db.item.dislikes+1)
+    return {"status": "success", "message": "Item disliked successfully"}

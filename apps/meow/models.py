@@ -36,7 +36,10 @@ db.define_table(
 #    Field('image', 'upload', default='uploads/default_item.png'),
     Field("name", "text"),
     Field("description", "text"),
-    Field("restaurant_id", "reference restaurant")
+    Field('image', 'upload'),
+    Field("restaurant_id", "reference restaurant"),
+    Field('likes', 'integer', default=0),
+    Field('dislikes', 'integer', default=0),
 )
 
 db.define_table(
@@ -63,52 +66,31 @@ db.define_table(
 
 db.commit()
 
-def add_restaurants_for_testing(num_restaurants):
-    # Test user names begin with "_".
-    # Counts how many users we need to add.
-#    db(db.restaurant).delete()
-#    db(db.day_by_day).delete()
-#    db(db.customization).delete()
-#    db(db.preference).delete()
-#    db(db.item).delete()
-#    db(db.auth_user.username.startswith("_")).delete()
-    """
-    num_test_users = db(db.auth_user.username.startswith("_")).count()
-    num_new_users = num_users - num_test_users
-    print("Adding", num_new_users, "users.")
-    for k in range(num_test_users, num_users):
-        first_name = random.choice(FIRST_NAMES)
-        last_name = first_name = random.choice(LAST_NAMES)
-        username = "_%s%.2i" % (first_name.lower(), k)
-        user = dict(
-            username=username,
-            email=username + "@ucsc.edu",
-            first_name=first_name,
-            last_name=last_name,
-            password=username,  # To facilitate testing.
-        )
-        auth.register(user, send=False)
-        ts = datetime.datetime.utcnow()
-            db.meow.insert(**m)
-    """
-    NUM_ITEMS = 0
+FOOD_NAMES = ["Pizza", "Burger", "Pasta", "Sushi", "Salad", "Soup", "Steak", "Tacos", "Fish", "Chicken"]
+FOOD_DESCRIPTIONS = ["Italian style pizza", "Cheeseburger with fries", "Pasta with tomato sauce", 
+                     "Fresh sushi platter", "Healthy green salad", "Hot chicken soup", "Grilled steak with vegetables", 
+                     "Mexican tacos", "Grilled fish with lemon", "Fried chicken"]
+
+def add_restaurants_for_testing(num_restaurants, num_items_per_restaurant):
     # Add num_restaurants to restaurant database.
     for n in range(num_restaurants):
         m = dict(
-            name="blahblah-" + str(n),
+            name="Restaurant-" + str(n),
         )
-        db.restaurant.insert(**m)
-        # For each restaurant, add NUM_ITEMS
-        for m in range(NUM_ITEMS):
-            first_name = random.choice(FIRST_NAMES)
-            desc = first_name = random.choice(LAST_NAMES)
+        restaurant_id = db.restaurant.insert(**m)  # save the ID of the new restaurant
+        # For each restaurant, add num_items_per_restaurant
+        for m in range(num_items_per_restaurant):
+            food_name = random.choice(FOOD_NAMES)
+            food_description = random.choice(FOOD_DESCRIPTIONS)
             item = dict(
-                name=first_name,
-                description=desc
+                name=food_name,
+                description=food_description,
+                restaurant_id=restaurant_id  # assign the restaurant_id to the item
             )
             db.item.insert(**item)
 
     db.commit()
-    
-# Comment out this line if you are not interested. 
-add_restaurants_for_testing(5)
+
+# # Create 5 restaurants each with 10 items
+# add_restaurants_for_testing(5, 10)
+

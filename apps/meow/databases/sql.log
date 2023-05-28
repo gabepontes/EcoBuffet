@@ -1,4 +1,4 @@
-timestamp: 2023-05-20T14:46:43.246433
+timestamp: 2023-05-27T11:24:18.395903
 CREATE TABLE "py4web_session"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "rkey" CHAR(512),
@@ -8,7 +8,7 @@ CREATE TABLE "py4web_session"(
     "expires_on" TIMESTAMP
 );
 success!
-timestamp: 2023-05-20T14:46:43.264507
+timestamp: 2023-05-27T11:24:18.408800
 CREATE TABLE "auth_user"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "username" CHAR(512) UNIQUE,
@@ -22,37 +22,39 @@ CREATE TABLE "auth_user"(
     "past_passwords_hash" TEXT
 );
 success!
-timestamp: 2023-05-20T14:46:43.278059
+timestamp: 2023-05-27T11:24:18.416888
 CREATE TABLE "auth_user_tag_groups"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "tagpath" CHAR(512),
     "record_id" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE ON UPDATE CASCADE  
 );
 success!
-timestamp: 2023-05-20T14:52:51.560544
+timestamp: 2023-05-27T11:24:18.424875
 CREATE TABLE "restaurant"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "name" TEXT,
     "created_by" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE ON UPDATE CASCADE  
 );
 success!
-timestamp: 2023-05-20T14:56:09.482949
+timestamp: 2023-05-27T11:24:18.433464
 CREATE TABLE "item"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-    "image" CHAR(512),
     "name" TEXT,
     "description" TEXT,
-    "restaurant_id" INTEGER REFERENCES "restaurant" ("id") ON DELETE CASCADE ON UPDATE CASCADE  
+    "image" CHAR(512),
+    "restaurant_id" INTEGER REFERENCES "restaurant" ("id") ON DELETE CASCADE ON UPDATE CASCADE  ,
+    "likes" INTEGER,
+    "dislikes" INTEGER
 );
 success!
-timestamp: 2023-05-20T14:56:09.495496
+timestamp: 2023-05-27T11:24:18.441345
 CREATE TABLE "day_by_day"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-    "item" INTEGER REFERENCES "item" ("id") ON DELETE CASCADE ON UPDATE CASCADE  ,
+    "item_id" INTEGER REFERENCES "item" ("id") ON DELETE CASCADE ON UPDATE CASCADE  ,
     "restaurant_id" INTEGER REFERENCES "restaurant" ("id") ON DELETE CASCADE ON UPDATE CASCADE  
 );
 success!
-timestamp: 2023-05-20T14:56:09.506057
+timestamp: 2023-05-27T11:24:18.448903
 CREATE TABLE "customization"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "background" CHAR(512),
@@ -60,45 +62,13 @@ CREATE TABLE "customization"(
     "restaurant_id" INTEGER REFERENCES "restaurant" ("id") ON DELETE CASCADE ON UPDATE CASCADE  
 );
 success!
-timestamp: 2023-05-20T14:56:45.186198
-ALTER TABLE "day_by_day" ADD "item_id" INTEGER REFERENCES "item" ("id") ON DELETE CASCADE ON UPDATE CASCADE  ;
-success!
-success!
-success!
-timestamp: 2023-05-20T15:00:00.827667
-ALTER TABLE "day_by_day" ADD "items_id" INTEGER REFERENCES "item" ("id") ON DELETE CASCADE ON UPDATE CASCADE  ;
-success!
-success!
-success!
-success!
-success!
-success!
-success!
-timestamp: 2023-05-20T15:21:53.083717
+timestamp: 2023-05-27T11:24:18.456452
 CREATE TABLE "preference"(
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "rating" CHAR(512),
     "item_id" INTEGER REFERENCES "item" ("id") ON DELETE CASCADE ON UPDATE CASCADE  ,
     "followed_by" INTEGER REFERENCES "auth_user" ("id") ON DELETE CASCADE ON UPDATE CASCADE  
 );
-success!
-success!
-success!
-success!
-success!
-success!
-success!
-success!
-success!
-success!
-success!
-success!
-success!
-success!
-success!
-success!
-success!
-success!
 success!
 success!
 success!
