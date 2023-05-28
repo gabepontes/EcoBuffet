@@ -10,7 +10,7 @@ from .common import db, session, T, cache, auth, logger, authenticated, unauthen
 from py4web.utils.url_signer import URLSigner
 from .models import get_username
 from werkzeug.utils import secure_filename
-from .models import add_restaurants_for_testing
+
 url_signer = URLSigner(session)
 
 # Py4web actions.
@@ -24,8 +24,6 @@ def index():
         add_items_url = URL("add_items", 'index', signer=url_signer),
         edit_items_url = URL("edit_items", 'index', signer=url_signer),
         remove_items_url = URL("remove_items", 'index', signer=url_signer),
-        like_item_url = URL("like_item", signer=url_signer),
-        dislike_item_url = URL("dislike_item", signer=url_signer),
     )
 
 
@@ -49,6 +47,7 @@ def get_restaurants():
 def restaurant_page(restaurant_id=None):
     assert restaurant_id is not None
     return dict(
+        get_restaurants_url = URL("get_restaurants", signer=url_signer),
         get_items_url = URL('get_items', vars=dict(restaurant_id=restaurant_id), signer=url_signer),
         like_item_url = URL("like_item", signer=url_signer),
         dislike_item_url = URL("dislike_item", signer=url_signer),

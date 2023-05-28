@@ -17,8 +17,8 @@ function init() {
         return a;
     };
     
-    self.display_menu = function(restaurant) {
-        self.data.restaurant_id = restaurant.id;
+    self.display_menu = function(restaurant_id) {
+        self.data.restaurant_id = restaurant_id;
         axios.get(get_items_url, {params: {restaurant_id: self.data.restaurant_id}}).then(function (response) {
             self.data.items = self.enumerate(response.data.items);
         });
@@ -64,7 +64,7 @@ function init() {
         self.vue.restaurants = self.enumerate(response.data.restaurants);
         console.log("Starting Restaurant App!")
     });
-
+    
     self.display_menu()
 
     return self;
