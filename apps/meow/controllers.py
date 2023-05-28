@@ -29,6 +29,12 @@ def index():
     )
 
 
+# Get a list of all users.
+@action("get_users")
+@action.uses(db, auth.user)
+def get_users():
+    users = db(db.auth_user).select().as_list()
+    return dict(users=users)
 
 # Get a list of all of the restaurants.
 @action("get_restaurants")
@@ -128,3 +134,11 @@ def dislike_item(item_id=None):
     assert item_id is not None
     db(db.item.id == item_id).update(dislikes=db.item.dislikes+1)
     return {"status": "success", "message": "Item disliked successfully"}
+
+@action('dashboard')
+@action.uses('dashboard.html', db, auth.user, url_signer)
+def dashboard():
+    return dict(
+        get_users_url = URL("get_users", signer=url_signer),
+        get_items_url = URL("get_items", signer=url_signer)
+    )
