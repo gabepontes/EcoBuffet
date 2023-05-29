@@ -49,10 +49,24 @@ def restaurant_page(restaurant_id=None):
     return dict(
         get_restaurants_url = URL("get_restaurants", signer=url_signer),
         get_items_url = URL('get_items', vars=dict(restaurant_id=restaurant_id), signer=url_signer),
+        get_restaurant_name_url = URL('get_restaurant_name', vars=dict(restaurant_id=restaurant_id), signer=url_signer),
         like_item_url = URL("like_item", signer=url_signer),
         dislike_item_url = URL("dislike_item", signer=url_signer),
         restaurant_id = restaurant_id
     )
+
+# Get the restaurant.name
+@action("get_restaurant_name")
+@action.uses(db, auth.user, url_signer.verify())
+def get_restaurant_name():
+    restaurant_name=""
+    restaurant_id = request.params.get('restaurant_id')
+    print(f"restaurant_id: {restaurant_id}")
+    restaurant_rows = db(db.restaurant.id == int(restaurant_id)).select()
+    for row in restaurant_rows:
+        restaurant_name = row.name
+    print(restaurant_name)
+    return dict(restaurant_name=restaurant_name)
 
 # Adjust the get_items action to accept a restaurant_id parameter.
 @action('get_items')
@@ -125,7 +139,9 @@ def remove_item(item_id=None):
 def like_item():
     item_id = request.json.get("item_id")
     db(db.item.id == item_id).update(likes=db.item.likes+1)
-    likes = db(db.item.id == item_id).select().as_list()[0]["likes"]
+    row_likes = db(db.item.id == item_id).select()
+    for row in row_likes:
+        likes = row.likes
     return dict(status="success",message="Item liked successfully",likes=likes)
 
 # Action to dislike an item
@@ -134,7 +150,9 @@ def like_item():
 def dislike_item():
     item_id = request.json.get("item_id")
     db(db.item.id == item_id).update(dislikes=db.item.dislikes+1)
-    dislikes = db(db.item.id == item_id).select().as_list()[0]["dislikes"]
+    row_dislikes = db(db.item.id == item_id).select()
+    for row in row_dislikes:
+        dislikes = row.dislikes
     return dict(status="success",message="Item disliked successfully",dislikes=dislikes )
 
 @action('dashboard')

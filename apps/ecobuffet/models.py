@@ -66,7 +66,7 @@ db.define_table(
 
 db.commit()
 
-FOOD_NAMES = ["Pizza", "Burger", "Pasta", "Sushi", "Salad", "Soup", "Steak", "Tacos", "Fish", "Chicken"]
+FOOD_NAMES = ["Pizza", "Burger", "Pasta", "Sushi", "Salad", "Soup", "Steak", "Tacos", "Fish", "Chicken", "Extremely Long Food Name"]
 FOOD_DESCRIPTIONS = ["Italian style pizza", "Cheeseburger with fries", "Pasta with tomato sauce", 
                      "Fresh sushi platter", "Healthy green salad", "Hot chicken soup", "Grilled steak with vegetables", 
                      "Mexican tacos", "Grilled fish with lemon", "Fried chicken"]
@@ -79,7 +79,6 @@ def clear_databases():
     db(db.day_by_day).delete()
     db(db.customization).delete()
     db(db.preference).delete()
-
 
 def add_restaurants_for_testing(num_restaurants, num_items_per_restaurant):
     clear_databases()
@@ -103,5 +102,5 @@ def add_restaurants_for_testing(num_restaurants, num_items_per_restaurant):
     db.commit()
 
 # # Create 5 restaurants each with 10 items
-#add_restaurants_for_testing(5, 10)
+add_restaurants_for_testing(5, 10)
 

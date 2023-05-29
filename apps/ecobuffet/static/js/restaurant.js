@@ -8,7 +8,8 @@ function init() {
         restaurants: [],
         items: [],
         formatted_items: [],
-        restaurant_id: null
+        restaurant_id: null,
+        restaurant_name: null
     };
 
     self.enumerate = function (a) {
@@ -17,13 +18,19 @@ function init() {
         a.map((e) => {e._idx = k++;});
         return a;
     };
+
+    self.get_restaurant_name = function(restaurant_id) {
+        self.data.restaurant_id = restaurant_id;
+        axios.get(get_restaurant_name_url, {params: {restaurant_id: self.data.restaurant_id}}).then(function (response) {
+            self.data.restaurant_name = response.data.restaurant_name;
+        });
+    }
     
     self.display_menu = function(restaurant_id) {
         self.data.restaurant_id = restaurant_id;
         axios.get(get_items_url, {params: {restaurant_id: self.data.restaurant_id}}).then(function (response) {
             self.data.items = self.enumerate(response.data.items);
             self.get_formatted_items();
-            console.log(self.data.items)
         });
     };
 
@@ -60,13 +67,13 @@ function init() {
         // for a column size of 3
         COLUMN_SIZE = 4;
         column_tracker = 0;
-        let arr = []
+        let arr = [];
         for (idx in self.data.items) {
-            arr.push(idx)
+            arr.push(idx);
             column_tracker += 1;
             if (column_tracker % COLUMN_SIZE == 0) {
                 self.data.formatted_items.push(arr);
-                arr = []
+                arr = [];
             }
             // Enter in the last array if it matches the last index.
             // Fill the remainder of the array with null values so
@@ -74,7 +81,7 @@ function init() {
             else if (idx == self.data.items.length - 1) {
                 console.log("Entering in remaining items!")
                 while (arr.length != COLUMN_SIZE) {
-                    arr.push(null)
+                    arr.push(null);
                 }
                 self.data.formatted_items.push(arr);
             }
@@ -100,10 +107,11 @@ function init() {
     // such as getting data from server
     axios.get(get_restaurants_url).then(function(response) {
         self.vue.restaurants = self.enumerate(response.data.restaurants);
-        console.log("Starting Restaurant App!")
+        console.log("Starting Restaurant App!");
     });
 
-    self.display_menu()
+    self.get_restaurant_name();
+    self.display_menu();
 
     return self;
 };

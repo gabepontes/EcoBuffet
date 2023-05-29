@@ -1,7 +1,11 @@
 [[extend 'layout.html']]
 <div class="section" id="vue-target" v-cloak>
+    <a class="button is-normal" href="[[=URL('index')]]">
+        <i class="fa fa-arrow-left"></i> <div class="box is-shadowless">Return to Main Menu</div>
+    </a>
+    <h1 class="title has-text-centered">{{restaurant_name}}</h1>
     <div class="box">
-        <h1 class="title has-text-centered">Menu</h1>
+        <h1 class="title has-text-centered is-4">Menu</h1>
         <div class="tile-ancestor">
             <!-- Generate a menu of items in a grid -->
             <div class="tile is-parent" v-for="group in formatted_items">
@@ -11,10 +15,10 @@
                             <!-- Generate a single item in a nice format. -->
                             <!-- Encapsulate each element in a tile. -->
                             <!-- Buttons to like/dislike the item. -->
+                            <span class="tile title is-6 level-item">{{items[idx].name}}</span>
                             <div class="tile level">
-                                <span class="tile title is-5 level-item">{{items[idx].name}}</span>
-                                <a class="button is-success is-light level-item block m-0" @click="like_item(idx)">Like</a>
-                                <a class="button is-danger is-light level-item block m-0" @click="dislike_item(idx)">Dislike</a>
+                                <a class="button is-success is-light level-item block m-0" @click="like_item(idx)">Like - {{items[idx].likes}}</a>
+                                <a class="button is-danger is-light level-item block m-0" @click="dislike_item(idx)">Dislike - {{items[idx].dislikes}}</a>
 
                             </div>
                             <figure class="image is-4by3 tile">
@@ -33,6 +37,7 @@
 <!-- Loads the index-specific js for Vue -->
 <script>
   let get_restaurants_url = "[[=XML(get_restaurants_url)]]";
+  let get_restaurant_name_url = "[[=XML(get_restaurant_name_url)]]";
   let get_items_url = "[[=XML(get_items_url)]]";
   let like_item_url = "[[=XML(like_item_url)]]";
   let dislike_item_url = "[[=XML(dislike_item_url)]]";
