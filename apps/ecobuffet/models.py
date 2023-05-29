@@ -101,6 +101,6 @@ def add_restaurants_for_testing(num_restaurants, num_items_per_restaurant):
 
     db.commit()
 
-# Create 5 restaurants each with 10 items
-#add_restaurants_for_testing(5, 10)
+# # # Create 5 restaurants each with 10 items
+# add_restaurants_for_testing(5, 10)
 

@@ -22,12 +22,13 @@
   </div>
   <!-- Put here your Vue.js template -->
   <div class="box">
-    <div>Restaurants</div>
+    <h1 class = "title">Restaurants</h1>
     <div v-for="restaurant in restaurants">
       <!-- Iterates through all the restaurants -->
       <div class="box">
         <!-- Link to the restaurant's page. -->
-        <a :href="'/ecobuffet/restaurants/' + restaurant.id">{{restaurant.name}}</a>
+        <a :href="'/ecobuffet/restaurants/' + restaurant.id" 
+           :class="{'has-text-light': !light_mode}">{{restaurant.name}}</a>
       </div>
     </div>
   </div>

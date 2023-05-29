@@ -1,5 +1,16 @@
 [[extend 'layout.html']]
 <div class="section" id="vue-target" v-cloak>
+    <!-- Button for Dark/Light Mode-->
+    <div class="field has-addons">
+        <div class="control">
+            <button class="button is-dark" v-on:click="toggle_light_mode" v-if="light_mode == true">
+                <span class="icon is-small"><i class="fa fa-moon-o"></i></span>
+            </button>
+            <button class="button is-light" v-on:click="toggle_light_mode" v-else>
+                <span class="icon is-small"><i class="fa fa-sun-o"></i></span>
+            </button>
+        </div>
+    </div>
     <a class="button is-normal" href="[[=URL('index')]]">
         <i class="fa fa-arrow-left"></i> <div class="box is-shadowless">Return to Main Menu</div>
     </a>
@@ -19,7 +30,6 @@
                             <div class="tile level">
                                 <a class="button is-success is-light level-item block m-0" @click="like_item(idx)">Like - {{items[idx].likes}}</a>
                                 <a class="button is-danger is-light level-item block m-0" @click="dislike_item(idx)">Dislike - {{items[idx].dislikes}}</a>
-
                             </div>
                             <figure class="image is-4by3 tile">
                                 <img :src="items[idx].image" class="tile has-text-centered">{{items[idx].image}}</img>
