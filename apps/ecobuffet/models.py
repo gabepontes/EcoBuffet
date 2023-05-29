@@ -80,27 +80,27 @@ def clear_databases():
     db(db.customization).delete()
     db(db.preference).delete()
 
-def add_restaurants_for_testing(num_restaurants, num_items_per_restaurant):
-    clear_databases()
-    # Add num_restaurants to restaurant database.
-    for n in range(num_restaurants):
-        m = dict(
-            name="Restaurant-" + str(n),
-        )
-        restaurant_id = db.restaurant.insert(**m)  # save the ID of the new restaurant
-        # For each restaurant, add num_items_per_restaurant
-        for m in range(num_items_per_restaurant):
-            food_name = random.choice(FOOD_NAMES)
-            food_description = random.choice(FOOD_DESCRIPTIONS)
-            item = dict(
-                name=food_name,
-                description=food_description,
-                restaurant_id=restaurant_id  # assign the restaurant_id to the item
-            )
-            db.item.insert(**item)
+# def add_restaurants_for_testing(num_restaurants, num_items_per_restaurant):
+#     clear_databases()
+#     # Add num_restaurants to restaurant database.
+#     for n in range(num_restaurants):
+#         m = dict(
+#             name="Restaurant-" + str(n),
+#         )
+#         restaurant_id = db.restaurant.insert(**m)  # save the ID of the new restaurant
+#         # For each restaurant, add num_items_per_restaurant
+#         for m in range(num_items_per_restaurant):
+#             food_name = random.choice(FOOD_NAMES)
+#             food_description = random.choice(FOOD_DESCRIPTIONS)
+#             item = dict(
+#                 name=food_name,
+#                 description=food_description,
+#                 restaurant_id=restaurant_id  # assign the restaurant_id to the item
+#             )
+#             db.item.insert(**item)
 
-    db.commit()
+#     db.commit()
 
-# # Create 5 restaurants each with 10 items
-add_restaurants_for_testing(5, 10)
+# # # Create 5 restaurants each with 10 items
+# add_restaurants_for_testing(5, 10)
 

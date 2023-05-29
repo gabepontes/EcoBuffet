@@ -5,12 +5,14 @@ function init() {
 
     // This is the Vue data.
     self.data = {
+        light_mode: localStorage.getItem("light_mode") === "true" || true,
         restaurants: [],
         items: [],
         formatted_items: [],
         restaurant_id: null,
         restaurant_name: null
     };
+
 
     self.enumerate = function (a) {
         // This adds an _idx field to each element of the array.
@@ -89,18 +91,53 @@ function init() {
         console.log(self.data.formatted_items)
     }
 
+    self.toggle_light_mode = function() {
+        if (self.vue.light_mode == true) {
+            self.vue.light_mode = false;
+            localStorage.setItem("light_mode", false);
+        } else {
+            self.vue.light_mode = true;
+            localStorage.setItem("light_mode", true);
+        }
+    
+        let main = document.body;
+        main.classList.toggle("has-background-dark");
+        main.classList.toggle("has-text-light");
+    
+        let boxes = document.getElementsByClassName("box");
+        for (var i = 0; i < boxes.length; i++) {
+            boxes.item(i).classList.toggle("has-background-dark");
+            boxes.item(i).classList.toggle("has-text-light");
+        }
+    
+        // Toggle text color for restaurant title and menu items
+        let titles = document.getElementsByClassName("restaurant-title");
+        for (var i = 0; i < titles.length; i++) {
+            titles.item(i).classList.toggle("has-text-light");
+        }
+    
+        let menuItems = document.getElementsByClassName("menu-item");
+        for (var i = 0; i < menuItems.length; i++) {
+            menuItems.item(i).classList.toggle("has-text-light");
+        }
+    }
+
     // This contains all the methods.
     self.methods = {
         display_menu: self.display_menu,
         like_item: self.like_item,
-        dislike_item: self.dislike_item
+        dislike_item: self.dislike_item,
+        toggle_light_mode: self.toggle_light_mode
     };
 
     // This creates the Vue instance.
     self.vue = new Vue({
         el: "#vue-target",
         data: self.data,
-        methods: self.methods
+        methods: self.methods,
+        created() {
+            if (this.light_mode === false) this.toggle_light_mode();
+        }
     });
 
     // Put here any initialization code
