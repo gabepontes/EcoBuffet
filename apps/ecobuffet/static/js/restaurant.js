@@ -109,13 +109,20 @@ function init() {
             boxes.item(i).classList.toggle("has-background-dark");
             boxes.item(i).classList.toggle("has-text-light");
         }
-    
-        // Toggle text color for restaurant title and menu items
-        let titles = document.getElementsByClassName("restaurant-title");
-        for (var i = 0; i < titles.length; i++) {
-            titles.item(i).classList.toggle("has-text-light");
+
+        // Toggle color for 'Return to Main Menu' button
+        let returnButton = document.getElementsByClassName("return-button");
+        for (var i = 0; i < returnButton.length; i++) {
+            returnButton.item(i).classList.toggle("has-text-light");
         }
-    
+
+        // Toggle color for restaurant name
+        let restaurantName = document.getElementsByClassName("restaurant-name");
+        for (var i = 0; i < restaurantName.length; i++) {
+            restaurantName.item(i).classList.toggle("has-text-light");
+        }
+
+        // Toggle color for menu items
         let menuItems = document.getElementsByClassName("menu-item");
         for (var i = 0; i < menuItems.length; i++) {
             menuItems.item(i).classList.toggle("has-text-light");

@@ -11,12 +11,12 @@
             </button>
         </div>
     </div>
-    <a class="button is-normal" href="[[=URL('index')]]">
+    <a class="button is-normal return-button" href="[[=URL('index')]]">
         <i class="fa fa-arrow-left"></i> <div class="box is-shadowless">Return to Main Menu</div>
     </a>
-    <h1 class="title has-text-centered">{{restaurant_name}}</h1>
+    <h1 class="title has-text-centered restaurant-name">{{restaurant_name}}</h1>
     <div class="box">
-        <h1 class="title has-text-centered is-4">Menu</h1>
+        <h1 class="title has-text-centered is-4 menu-item">Menu</h1>
         <div class="tile-ancestor">
             <!-- Generate a menu of items in a grid -->
             <div class="tile is-parent" v-for="group in formatted_items">
@@ -57,3 +57,8 @@
 <script src="js/sugar.js"></script>
 <script src="js/restaurant.js"></script>
 [[end]]
+
+
+
+
+
