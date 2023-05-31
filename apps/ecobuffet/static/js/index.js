@@ -4,7 +4,7 @@ function init() {
 
     // This is the Vue data.
     self.data = {
-        light_mode:true,
+        light_mode: localStorage.getItem('light_mode') !== 'false',  // Load the light mode state from local storage
         restaurants: []
     };
 
@@ -18,8 +18,10 @@ function init() {
     self.toggle_light_mode = function() {
         if (self.vue.light_mode == true) {
             self.vue.light_mode = false;
+            localStorage.setItem('light_mode', 'false');  // Store the light mode state in local storage
         } else {
             self.vue.light_mode = true;
+            localStorage.setItem('light_mode', 'true');  // Store the light mode state in local storage
         }
         let main = document.body;
         main.classList.toggle("has-background-dark");

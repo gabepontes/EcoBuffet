@@ -22,7 +22,7 @@
   </div>
   <!-- Put here your Vue.js template -->
   <div class="box">
-    <h1 class = "title">Restaurants</h1>
+    <h1 class="title" :class="{'has-text-light': !light_mode}">Restaurants</h1>
     <div v-for="restaurant in restaurants">
       <!-- Iterates through all the restaurants -->
       <div class="box">
@@ -31,7 +31,7 @@
            :class="{'has-text-light': !light_mode}">{{restaurant.name}}</a>
       </div>
     </div>
-  </div>
+</div>
 </div>
 
 [[block page_scripts]]
