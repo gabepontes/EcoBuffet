@@ -1,0 +1,55 @@
+[[extend 'layout.html']]
+
+<div class="section" id="vue-target" v-cloak>
+  <h1 class="title has-text-centered">Admin Page for Restaurant {{restaurant_id}}</h1>
+  
+  <div class="tabs is-centered is-boxed is-medium">
+    <ul>
+      <li :class="{ 'is-active': tab === 'add' }">
+        <a @click="tab = 'add'">Add Item</a>
+      </li>
+      <li :class="{ 'is-active': tab === 'edit' }">
+        <a @click="tab = 'edit'">Edit Item</a>
+      </li>
+      <li :class="{ 'is-active': tab === 'remove' }">
+        <a @click="tab = 'remove'">Remove Item</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Add Item Form -->
+  <form v-if="tab === 'add'" @submit.prevent="addItem">
+    <input type="text" v-model="newItem.name" placeholder="Item name">
+    <button type="submit">Add</button>
+  </form>
+
+  <!-- Edit Item Form -->
+  <div v-if="tab === 'edit' && selectedItem">
+    <select v-model="selectedItem">
+      <option v-for="item in items" :value="item">{{item.name}}</option>
+    </select>
+    <input type="text" v-model="selectedItem.name">
+    <button @click="editItem">Edit</button>
+  </div>
+
+  <!-- Remove Item -->
+  <div v-if="tab === 'remove' && selectedItem">
+    <select v-model="selectedItem">
+      <option v-for="item in items" :value="item">{{item.name}}</option>
+    </select>
+    <button @click="removeItem">Remove</button>
+  </div>
+
+  [[block page_scripts]]
+  <script>
+    let getRestaurantsUrl = "[[=XML(get_restaurants_url)]]";
+    let getItemsUrl = "[[=XML(get_items_url)]]";
+    let addItemsUrl = "[[=XML(add_items_url)]]";
+    let editItemsUrl = "[[=XML(edit_items_url)]]";
+    let removeItemsUrl = "[[=XML(remove_items_url)]]";
+  </script>
+  <script src="js/axios.js"></script>
+  <script src="js/sugar.js"></script>
+  <script src="js/admin.js"></script>
+  [[end]]
+</div>

@@ -26,6 +26,28 @@ def index():
         remove_items_url = URL("remove_items", 'index', signer=url_signer),
     )
 
+PASSWORD = '123'  
+
+@action('admin/<restaurant_id:int>', method=["GET", "POST"])
+@action.uses('admin.html', session, url_signer)  
+def admin(restaurant_id=None):
+    assert restaurant_id is not None
+
+    password = request.forms.get('password')  
+    if request.method == "POST":
+        if password != PASSWORD:
+            return HTTP(401, 'Unauthorized')
+  
+    return dict(
+        restaurant_id = restaurant_id,
+        get_restaurants_url = URL("get_restaurants", signer=url_signer),
+        get_items_url = URL('get_items', vars=dict(restaurant_id=restaurant_id), signer=url_signer),
+        add_items_url = URL("add_items", 'admin', vars=dict(restaurant_id=restaurant_id), signer=url_signer),
+        edit_items_url = URL("edit_items", 'admin', vars=dict(restaurant_id=restaurant_id), signer=url_signer),
+        remove_items_url = URL("remove_items", 'admin', vars=dict(restaurant_id=restaurant_id), signer=url_signer),
+    )
+
+
 
 # Get a list of all users.
 @action("get_users")
@@ -78,9 +100,10 @@ def get_items():
     return dict(items=items)
 
 # Add a new item to the overall item database.
-@action('add_item', method=["GET","POST"])
-@action.uses(db, url_signer, session, auth.user, 'add_item.html')
-def add_item():
+@action('add_items/<restaurant_id:int>', method=["GET", "POST"])
+@action.uses(db, session, url_signer, 'add_items.html')
+def add_items(restaurant_id=None):
+    assert restaurant_id is not None
     # Create a form to submit a new item.
     form = Form(db.item, csrf_session=session, formstyle=FormStyleBulma)
     if form.accepted:
@@ -98,9 +121,10 @@ def add_restaurant():
     return dict(form=form)
 
 # Edit an item using the Vue.js methods
-@action("/edit_item/<item_id:int>", method="POST")
-@action.uses(db, auth.user)
-def edit_item(item_id):
+@action('edit_items/<restaurant_id:int>', method=["GET", "POST"])
+@action.uses(db, session, url_signer, 'edit_items.html')
+def edit_items(restaurant_id=None):
+    assert restaurant_id is not None
     name = request.forms.get("name")
     description = request.forms.get("description")
     image = request.files.get("image")
@@ -122,9 +146,10 @@ def edit_item(item_id):
         raise HTTP(404, f"Item with id {item_id} not found")
 
 # Remove an item from the item db.
-@action("/remove_item/<item_id:int>")
-@action.uses(db, session, auth.user, url_signer.verify())
-def remove_item(item_id=None):
+@action('remove_items/<restaurant_id:int>', method=["GET", "POST"])
+@action.uses(db, session, url_signer, 'remove_items.html')
+def remove_items(restaurant_id=None):
+    assert restaurant_id is not None
     assert item_id is not None
     item = db.item[item_id]
     if item is None:
