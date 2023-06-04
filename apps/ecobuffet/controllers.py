@@ -102,15 +102,16 @@ def get_restaurant_name():
 
 # Adjust the get_items action to accept a restaurant_id parameter.
 @action('get_items')
-@action.uses(db, auth.user, url_signer.verify())
+@action.uses(db, auth.user)  # Note the removal of 'url_signer'
 def get_items():
     restaurant_id = request.params.get('restaurant_id')
     print(f"restaurant_id: {restaurant_id}")
     items = db(db.item.restaurant_id == int(restaurant_id)).select().as_list()
     return dict(items=items)
 
+
 # Add a new item to the overall item database.
-@action('add_items/<restaurant_id:int>', method=["GET", "POST"])
+@action('add_items/<restaurant_id:int>/admin', method=["GET", "POST"])
 @action.uses(db, session, url_signer, 'add_items.html')
 def add_items(restaurant_id=None):
     assert restaurant_id is not None
@@ -119,6 +120,7 @@ def add_items(restaurant_id=None):
     if form.accepted:
         redirect(URL('index'))
     return dict(form=form)
+
 
 
 # Add a new restaurant to the overall restaurant database.

@@ -1,6 +1,6 @@
 [[extend 'layout.html']]
 
-<div class="section" id="vue-target" v-cloak>
+<div id="vue-target" data-restaurant-id="[[=restaurant_id]]">
     <h1 class="title has-text-centered">Admin Page for [[=restaurant_name]]</h1>
   
   <div class="tabs is-centered is-boxed is-medium">
@@ -23,22 +23,23 @@
     <button type="submit">Add</button>
   </form>
 
-  <!-- Edit Item Form -->
-  <div v-if="tab === 'edit' && selectedItem">
-    <select v-model="selectedItem">
-      <option v-for="item in items" :value="item">{{item.name}}</option>
-    </select>
-    <input type="text" v-model="selectedItem.name">
-    <button @click="editItem">Edit</button>
-  </div>
+    <!-- Edit Item Form -->
+    <div v-if="tab === 'edit'">
+        <select v-model="selectedItemId">
+        <option v-for="item in items" :value="item.id">{{item.name}}</option>
+        </select>
+        <input type="text" v-model="selectedItemName">
+        <button @click="editItem">Edit</button>
+    </div>
 
-  <!-- Remove Item -->
-  <div v-if="tab === 'remove' && selectedItem">
-    <select v-model="selectedItem">
-      <option v-for="item in items" :value="item">{{item.name}}</option>
-    </select>
-    <button @click="removeItem">Remove</button>
-  </div>
+    <!-- Remove Item -->
+    <div v-if="tab === 'remove'">
+        <select v-model="selectedItemId">
+        <option v-for="item in items" :value="item.id">{{item.name}}</option>
+        </select>
+        <button @click="removeItem">Remove</button>
+    </div>
+
 
   [[block page_scripts]]
   <script>
