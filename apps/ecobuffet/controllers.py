@@ -115,11 +115,17 @@ def get_items():
 @action.uses(db, session, url_signer, 'add_items.html')
 def add_items(restaurant_id=None):
     assert restaurant_id is not None
-    # Create a form to submit a new item.
-    form = Form(db.item, csrf_session=session, formstyle=FormStyleBulma)
-    if form.accepted:
-        redirect(URL('index'))
-    return dict(form=form)
+    if request.method == "POST":
+        data = request.json
+        name = data.get('name')
+        description = data.get('description')
+        db.item.insert(name=name, description=description, restaurant_id=restaurant_id)
+        return "success"
+    else:
+        form = Form(db.item, csrf_session=session, formstyle=FormStyleBulma)
+        if form.accepted:
+            redirect(URL('index'))
+        return dict(form=form)
 
 
 
