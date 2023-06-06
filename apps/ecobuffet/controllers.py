@@ -148,7 +148,7 @@ def add_restaurant():
     return dict(form=form)
 
 # Edit an item using the Vue.js methods
-@action('edit_items/<restaurant_id:int>/<item_id:int>', method=["GET", "POST"])
+@action('edit_items/<restaurant_id:int>/<item_id:int>/admin', method=["GET", "POST"])
 @action.uses(db, session, url_signer, 'edit_items.html')
 def edit_items(restaurant_id=None, item_id=None):
     assert restaurant_id is not None
@@ -174,7 +174,7 @@ def edit_items(restaurant_id=None, item_id=None):
         raise HTTP(404, f"Item with id {item_id} not found")
 
 # Remove an item from the item db.
-@action('remove_items/<restaurant_id:int>/<item_id:int>', method=["GET", "POST"])
+@action('remove_items/<restaurant_id:int>/<item_id:int>/admin', method=["GET", "POST", "DELETE"])
 @action.uses(db, session, url_signer, 'remove_items.html')
 def remove_items(restaurant_id=None, item_id=None):
     assert restaurant_id is not None

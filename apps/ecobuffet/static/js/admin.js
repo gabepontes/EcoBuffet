@@ -41,13 +41,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     });
             },
             
-            
             handleFileUpload(){
                 this.newItem.image = this.$refs.file.files[0];
             },
 
             handleEditFileUpload(){ 
                 this.selectedItemImage = this.$refs.editFile.files[0];
+                this.$refs.editFile.value = ''; 
             },
 
             addItem: function() {
@@ -68,12 +68,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     this.newItem.image = null;
                 });
             },
-            populateItemDetails: function() {
-                const selectedItem = this.items.find(item => item.id === this.selectedItemId);
-                this.selectedItemName = selectedItem.name;
-                this.selectedItemDescription = selectedItem.description; 
-                this.selectedItemImage = null; 
-            },
+
+            populateItemDetails: function(itemId) {
+                itemId = Number(itemId);  
+                const item = this.items.find(item => item.id === itemId);
+                this.selectedItemId = item.id;
+                this.selectedItemName = item.name;
+                this.selectedItemDescription = item.description;
+                this.selectedItemImage = item.image; 
+            },            
+
 
             editItem: function() {
                 if (this.selectedItemId) {
@@ -91,20 +95,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     })
                     .then((response) => {
                         this.getItems();
+                        this.selectedItemId = null;
+                        this.selectedItemName = null;
+                        this.selectedItemDescription = null;
+                        this.selectedItemImage = null; // reset selected item image
                     });
                 }
             },
             removeItem: function() {
                 if (this.selectedItemId) {
-                    const selectedItem = this.items.find(item => item.id === this.selectedItemId);
-                    const postData = {
-                        id: selectedItem.id,
-                        restaurant_id: this.restaurant_id,
-                    };
-                    axios.post(`/ecobuffet/remove_items/${this.restaurant_id}/${this.selectedItemId}/admin`, postData)
-                        .then((response) => {
-                            this.getItems();
-                        });
+                    axios.delete(`/ecobuffet/remove_items/${this.restaurant_id}/${this.selectedItemId}/admin`)
+                    .then((response) => {
+                        this.getItems();
+                        this.selectedItemId = null;
+                    });
                 }
             },
         },
