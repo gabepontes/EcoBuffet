@@ -11,12 +11,9 @@
             </button>
         </div>
     </div>
-    <div class="button is-normal return-button" :class="{'is-dark': !light_mode, 'is-light': light_mode}" href="[[=URL('index')]]">
-        <div class="fa fa-arrow-left" :class="{'has-text-light': !light_mode, 'has-text-dark': light_mode}"></div>
-        <div class="box is-shadowless" :class="{'has-background-dark': !light_mode, 'has-background-light': light_mode, 'has-text-light': !light_mode, 'has-text-dark': light_mode}">
-            Return to Main Menu
-        </div>
-    </div>
+    <a class="button is-normal return-button" :class="{'is-dark': !light_mode, 'is-light': light_mode}" href="[[=URL('index')]]">
+        <i class="fa fa-arrow-left" :class="{'has-text-light': !light_mode, 'has-text-dark': light_mode}">Return to Main Menu</i>
+    </a>
     <h1 class="title has-text-centered restaurant-name">{{restaurant_name}}</h1>
     <div class="section" id="vue-target" v-cloak>
         <div class="box">
