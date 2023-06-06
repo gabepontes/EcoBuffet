@@ -23,7 +23,7 @@
     <h1 class="title" :class="{'has-text-light': !light_mode}">Restaurants</h1>
     <div v-for="restaurant in restaurants">
       <!-- Iterates through all the restaurants -->
-      <div class="box">
+      <div class="box" :class="{'has-background-dark': !light_mode}">
         <!-- Link to the restaurant's page. -->
         <a :href="'/ecobuffet/restaurants/' + restaurant.id" 
            :class="{'has-text-light': !light_mode}">{{restaurant.name}}</a>

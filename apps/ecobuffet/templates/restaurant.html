@@ -23,9 +23,9 @@
                 <div class="tile is-parent" v-for="group in formatted_items">
                     <div class="tile is-child is-vertical" v-for="idx in group">
                         <div v-if="idx != null">
-                            <div class="box is-shadowless">
+                            <div class="box is-shadowless" :class="{'has-background-dark': !light_mode}">
                                 <!-- Add the "menu-item" class to each item -->
-                                <span class="tile title is-6 level-item menu-item">{{items[idx].name}}</span>
+                                <span class="tile title is-6 level-item menu-item" :class="{'has-text-light': !light_mode}">{{items[idx].name}}</span>
                                 <div class="tile level">
                                     <a class="button is-success is-light level-item block m-0" @click="like_item(idx)">Like - {{items[idx].likes}}</a>
                                     <a class="button is-danger is-light level-item block m-0" @click="dislike_item(idx)">Dislike - {{items[idx].dislikes}}</a>
@@ -33,7 +33,7 @@
                                 <figure class="image is-4by3 tile">
                                     <img :src="items[idx].image" class="tile has-text-centered menu-item">{{items[idx].image}}</img>
                                 </figure>
-                                <div class="box tile">{{items[idx].description}}</div>
+                                <div class="box tile" :class="{'has-background-dark': !light_mode}"><span :class="{'has-text-light': !light_mode}">{{items[idx].description}}</span></div>
                             </div>
                         </div>
                     </div>

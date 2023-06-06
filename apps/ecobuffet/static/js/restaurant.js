@@ -5,7 +5,7 @@ function init() {
 
     // This is the Vue data.
     self.data = {
-        light_mode: localStorage.getItem("light_mode") === "true" || true,
+        light_mode: localStorage.getItem("light_mode") == "true",
         restaurants: [],
         items: [],
         formatted_items: [],
@@ -126,6 +126,38 @@ function init() {
         }
     }
 
+    self.page_load = function() {
+        if (localStorage.getItem('light_mode') == 'false') {
+            let main = document.body;
+            main.classList.add("has-background-dark");
+            main.classList.add("has-text-light");
+
+            let boxes = document.getElementsByClassName("box");
+            for (var i = 0; i < boxes.length; i++) {
+                boxes.item(i).classList.add("has-background-dark");
+                boxes.item(i).classList.add("has-text-light");
+            }
+
+            // Toggle text color for restaurant title and menu items
+            let titles = document.getElementsByClassName("restaurant-title");
+            for (var i = 0; i < titles.length; i++) {
+                console.log("titles")
+                titles.item(i).classList.add("has-text-light");
+            }
+            let restaurantName = document.getElementsByClassName("restaurant-name");
+            for (var i = 0; i < restaurantName.length; i++) {
+                console.log("restaurant")
+                restaurantName.item(i).classList.add("has-text-light");
+            }
+            // Here's the new piece for menu items
+            let menuItems = document.getElementsByClassName("menu-item");
+            for (var i = 0; i < menuItems.length; i++) {
+                console.log("menu")
+                menuItems.item(i).classList.add("has-text-light");
+            }
+        }
+    }
+
     // This contains all the methods.
     self.methods = {
         display_menu: self.display_menu,
@@ -153,6 +185,8 @@ function init() {
 
     self.get_restaurant_name();
     self.display_menu();
+
+    self.page_load();
 
     return self;
 };

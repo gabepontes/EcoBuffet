@@ -4,7 +4,7 @@ function init() {
 
     // This is the Vue data.
     self.data = {
-        light_mode: localStorage.getItem('light_mode') !== 'false',  // Load the light mode state from local storage
+        light_mode: localStorage.getItem('light_mode') == 'true',  // Load the light mode state from local storage
         restaurants: []
     };
 
@@ -30,9 +30,23 @@ function init() {
         let boxes = document.getElementsByClassName("box");
         for (var i = 0; i < boxes.length; i++) {
             boxes.item(i).classList.toggle("has-background-dark");
-            boxes.item(i).classList.toggle("has-text-light");
          }
     }
+
+    self.page_load = function() {
+        if (localStorage.getItem('light_mode') == 'false') {
+            let main = document.body;
+            main.classList.toggle("has-background-dark");
+            main.classList.toggle("has-text-light");
+
+            let boxes = document.getElementsByClassName("box");
+            for (var i = 0; i < boxes.length; i++) {
+                console.log('box')
+                boxes.item(i).classList.toggle("has-background-dark");
+            }
+        }
+    }
+
 
     // This contains all the methods.
     self.methods = {
@@ -48,6 +62,20 @@ function init() {
 
     // Fetch restaurants when the page loads
     self.fetch_restaurants();
+
+    if (localStorage.getItem('light_mode') == null) {
+        localStorage.setItem('light_mode', 'true');
+        self.light_mode = true;
+    } else {
+        if (localStorage.getItem('light_mode') == 'true') {
+            self.light_mode = true;
+        } else {
+            self.light_mode = false;
+            
+        }
+    }
+
+    self.page_load();
 
     return self;
 };
