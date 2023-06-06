@@ -102,7 +102,7 @@ def get_restaurant_name():
 
 # Adjust the get_items action to accept a restaurant_id parameter.
 @action('get_items')
-@action.uses(db, auth.user)  # Note the removal of 'url_signer'
+@action.uses(db, auth.user)  
 def get_items():
     restaurant_id = request.params.get('restaurant_id')
     print(f"restaurant_id: {restaurant_id}")
@@ -116,16 +116,24 @@ def get_items():
 def add_items(restaurant_id=None):
     assert restaurant_id is not None
     if request.method == "POST":
-        data = request.json
-        name = data.get('name')
-        description = data.get('description')
-        db.item.insert(name=name, description=description, restaurant_id=restaurant_id)
+        filepath = None  
+        if 'image' in request.files:
+            image = request.files.image
+            if image.filename != '':
+                filename = secure_filename(image.filename)
+                filepath = os.path.join('uploads', filename)
+                with open(filepath, 'wb') as f:
+                    f.write(image.file.read())
+        name = request.params.get('name')
+        description = request.params.get('description')
+        db.item.insert(name=name, description=description, image=filepath, restaurant_id=restaurant_id)
         return "success"
     else:
         form = Form(db.item, csrf_session=session, formstyle=FormStyleBulma)
         if form.accepted:
             redirect(URL('index'))
         return dict(form=form)
+
 
 
 

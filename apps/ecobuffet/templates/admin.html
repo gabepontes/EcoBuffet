@@ -17,20 +17,90 @@
     </ul>
   </div>
 
-  <!-- Add Item Form -->
-  <form v-if="tab === 'add'" @submit.prevent="addItem">
-    <input type="text" v-model="newItem.name" placeholder="Item name">
-    <button type="submit">Add</button>
-  </form>
+<!-- Add Item Form -->
+<div class="box" v-if="tab === 'add'">
+    <form @submit.prevent="addItem">
+        <div class="field">
+            <label class="label">Item name</label>
+            <div class="control">
+                <input class="input" type="text" v-model="newItem.name" placeholder="Item name">
+            </div>
+        </div>
 
-    <!-- Edit Item Form -->
-    <div v-if="tab === 'edit'">
-        <select v-model="selectedItemId">
-        <option v-for="item in items" :value="item.id">{{item.name}}</option>
-        </select>
-        <input type="text" v-model="selectedItemName">
-        <button @click="editItem">Edit</button>
+        <div class="field">
+            <label class="label">Item description</label>
+            <div class="control">
+                <input class="input" type="text" v-model="newItem.description" placeholder="Item description">
+            </div>
+        </div>
+
+        <div class="file has-name is-fullwidth">
+            <label class="file-label">
+                <input class="file-input" type="file" ref="file" @change="handleFileUpload">
+                <span class="file-cta">
+                    <span class="file-icon">
+                        <i class="fas fa-upload"></i>
+                    </span>
+                    <span class="file-label">Choose a file…</span>
+                </span>
+            </label>
+        </div>
+        
+        <div class="field is-grouped">
+            <div class="control">
+                <button class="button is-link">Add</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Edit Item Form -->
+<div class="box" v-if="tab === 'edit'">
+    <div class="field">
+        <label class="label">Select an item to edit</label>
+        <div class="control">
+            <div class="select is-fullwidth">
+                <select v-model="selectedItemId" @change="populateItemDetails">
+                    <option v-for="item in items" :value="item.id">{{item.name}}</option>
+                </select>
+            </div>
+        </div>
     </div>
+
+    <div class="field">
+        <label class="label">Item name</label>
+        <div class="control">
+            <input class="input" type="text" v-model="selectedItemName" placeholder="Item name">
+        </div>
+    </div>
+
+    <div class="field">
+        <label class="label">Item description</label>
+        <div class="control">
+            <input class="input" type="text" v-model="selectedItemDescription" placeholder="Item description">
+        </div>
+    </div>
+
+    <div class="file has-name is-fullwidth">
+        <label class="file-label">
+            <input class="file-input" type="file" ref="editFile" @change="handleEditFileUpload">
+            <span class="file-cta">
+                <span class="file-icon">
+                    <i class="fas fa-upload"></i>
+                </span>
+                <span class="file-label">Choose a file…</span>
+            </label>
+        </div>
+
+    <div class="field is-grouped">
+        <div class="control">
+            <button class="button is-link" @click="editItem">Edit</button>
+        </div>
+    </div>
+</div>
+
+
+
 
     <!-- Remove Item -->
     <div v-if="tab === 'remove'">

@@ -35,12 +35,12 @@ db.define_table(
     "item",
     Field("name", "text"),
     Field("description", "text"),
-    Field('image', 'upload'),
+    Field('image', 'text', default='uploads/default_item.png'),  
     Field("restaurant_id", "reference restaurant"),
-    Field('image', 'upload', default='uploads/default_item.png'),
     Field('likes', 'integer', default=0),
     Field('dislikes', 'integer', default=0),
 )
+
 
 db.define_table(
     "day_by_day",
