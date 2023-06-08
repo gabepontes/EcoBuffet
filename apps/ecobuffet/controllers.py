@@ -13,9 +13,32 @@ from werkzeug.utils import secure_filename
 
 url_signer = URLSigner(session)
 
-# Py4web actions.
 @action('index')
 @action.uses('index.html', db, auth.user, url_signer)
+def landing():
+    return dict(
+        # Signed URLs
+        get_restaurants_url = URL("get_restaurants", signer=url_signer),
+    )
+
+@action('about_us')
+@action.uses('about_us.html', db, auth.user, url_signer)
+def about_us():
+    return dict()
+
+@action('mission_statement')
+@action.uses('mission_statement.html', db, auth.user, url_signer)
+def mission_statement():
+    return dict()
+
+@action('contact_us')
+@action.uses('contact_us.html', db, auth.user, url_signer)
+def contact_us():
+    return dict()
+
+# Py4web actions.
+@action('landing')
+@action.uses('landing.html', db, auth.user, url_signer)
 def index():
     return dict(
         # Signed URLs
@@ -121,7 +144,7 @@ def add_items(restaurant_id=None):
             image = request.files.image
             if image.filename != '':
                 filename = secure_filename(image.filename)
-                filepath = os.path.join('uploads', filename)
+                filepath = os.path.join('static', 'uploads', filename)
                 with open(filepath, 'wb') as f:
                     f.write(image.file.read())
         name = request.params.get('name')

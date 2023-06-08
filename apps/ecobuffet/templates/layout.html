@@ -9,13 +9,23 @@
     <link rel="stylesheet" href="css/meow.css">
     <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.css">
     [[block page_head]]<!-- individual pages can customize header here -->[[end]]
+    <style>
+      .footer {
+          background-color: rgb(0, 0, 0);
+          color: rgb(255, 255, 255);
+      }
+      .navbar is-dark {
+          background-color: rgb(0, 0, 0);
+          color: rgb(255, 255, 255);
+      }
+  </style>
   </head>
   <body>
     <!-- Navigation bar -->
     <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a class="navbar-item" href="[[=URL('index')]]">
-          Learn py4web
+        <a class="navbar-item" href="[[=URL('landing')]]">
+          Initial Page
           <!-- <img class="logo" width="150" src="images/site_icon.png"> -->
         </a>
 
@@ -31,6 +41,9 @@
       <div id="the-navbar-menu" class="navbar-menu">
         <div class="navbar-start">
           [[block page_menu_items]]<!-- individual pages can add menu items here -->[[end]]
+          <a class="navbar-item" href="[[=URL('about_us')]]">About Us</a>
+          <a class="navbar-item" href="[[=URL('mission_statement')]]">Mission Statement</a>
+          <a class="navbar-item" href="[[=URL('contact_us')]]">Contact Us</a>
         </div>
 
         <div class="navbar-end">
@@ -65,6 +78,10 @@
       <div class="content has-text-centered">
         Made with <a href="https://py4web.com">py4web</a>.
         <a href="https://learn-py4web.github.io">Learn py4web!</a>
+        <br>
+        <a href="[[=URL('about_us')]]">About Us</a> |
+        <a href="[[=URL('mission_statement')]]">Mission Statement</a> |
+        <a href="[[=URL('contact_us')]]">Contact Us</a>
       </div>
     </footer>
   </body>
