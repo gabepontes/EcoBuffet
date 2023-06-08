@@ -1,22 +1,43 @@
 [[extend 'layout.html']]
 
 <div class="section" id="vue-target" v-cloak>
+    <!-- Button for Dark/Light Mode-->
+    <div class="field has-addons">
+        <div class="control">
+            <button class="button is-dark" v-on:click="toggle_light_mode" v-if="light_mode == true">
+                <span class="icon is-small"><i class="fa fa-moon-o"></i></span>
+            </button>
+            <button class="button is-light" v-on:click="toggle_light_mode" v-else>
+                <span class="icon is-small"><i class="fa fa-sun-o"></i></span>
+            </button>
+        </div>
+
+    </div>
+    <div>
+        <a :href="'/ecobuffet/index/'"
+           :class="{'has-text-light': !light_mode}">Home</a>
+    </div>
     <div class="columns">
         <div class="column">
-            New Accounts
-            <div v-for="user in users">
-                {{user.username}}
+            <div class="box">
+                <h2 class="title" :class="{'has-text-light': !light_mode}">New Accounts</h2>
+                <div v-for="user in users" :class="{'has-text-light': !light_mode}">
+                    {{user.username}}
+                </div>
             </div>
         </div>
         <div class="column">
-            New Orders
-            <div v-for="order in orders">
-                {{order.name}}
+            <div class="box">
+                <h2 class="title" :class="{'has-text-light': !light_mode}">New Orders</h2>
+                <div v-for="order in orders" :class="{'has-text-light': !light_mode}">
+                    {{order.name}}
+                </div>
             </div>
         </div>
         <div class="column">
-            Customize
-            
+            <div class="box">
+                <h2 class="title" :class="{'has-text-light': !light_mode}">Customize</h2>
+            </div>
         </div>
     </div>
 </div>
