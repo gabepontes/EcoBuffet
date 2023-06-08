@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 restaurant_id: null,  
                 restaurants: [],
                 items: [],
-                tab: 'add', 
+                tab: 'seven', 
                 newItem: {
                     name: '',
                     description: '',
@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         },
         
         methods: {
+            
             getRestaurants: function() {
                 axios.get(getRestaurantsUrl)
                     .then((response) => {
