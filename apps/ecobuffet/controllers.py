@@ -166,6 +166,7 @@ def add_items(restaurant_id=None):
 def add_restaurant():
     # Create a form to submit a new restaurant.
     form = Form(db.restaurant, csrf_session=session, formstyle=FormStyleBulma)
+    
     if form.accepted:
         redirect(URL('index'))
     return dict(form=form)

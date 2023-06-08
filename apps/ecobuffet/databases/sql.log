@@ -75,3 +75,8 @@ success!
 success!
 success!
 success!
+timestamp: 2023-06-07T23:07:52.476358
+ALTER TABLE "restaurant" ADD "description" TEXT;
+timestamp: 2023-06-07T23:07:52.483398
+ALTER TABLE "restaurant" ADD "password" CHAR(512);
+success!
