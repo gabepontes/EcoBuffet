@@ -28,8 +28,11 @@ def get_time():
 db.define_table(
     "restaurant",
     Field("name", "text"),
+    Field("description", "text"),
+    Field("password", "password"), 
     Field('created_by', 'reference auth_user', default=lambda: auth.user_id)
 )
+
 
 db.define_table(
     "item",
@@ -40,7 +43,7 @@ db.define_table(
     Field('likes', 'integer', default=0),
     Field('dislikes', 'integer', default=0),
 )
-
+db.restaurant.created_by.readable = db.restaurant.created_by.writable = False
 
 db.define_table(
     "day_by_day",
