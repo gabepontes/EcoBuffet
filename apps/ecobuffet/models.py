@@ -29,10 +29,12 @@ db.define_table(
     "restaurant",
     Field("name", "text"),
     Field("description", "text"),
-    Field("password", "password"), 
+    Field("password", "password"),
+    Field("authorized_users", "list:reference auth_user", default=lambda: [auth.user_id]),
     Field('created_by', 'reference auth_user', default=lambda: auth.user_id)
 )
-
+db.restaurant.created_by.readable = db.restaurant.created_by.writable = False
+db.restaurant.authorized_users.readable = db.restaurant.authorized_users.writable = False
 
 db.define_table(
     "item",
@@ -43,7 +45,6 @@ db.define_table(
     Field('likes', 'integer', default=0),
     Field('dislikes', 'integer', default=0),
 )
-db.restaurant.created_by.readable = db.restaurant.created_by.writable = False
 
 db.define_table(
     "day_by_day",
@@ -83,27 +84,26 @@ def clear_databases():
     db(db.customization).delete()
     db(db.preference).delete()
 
-# def add_restaurants_for_testing(num_restaurants, num_items_per_restaurant):
-#     clear_databases()
-#     # Add num_restaurants to restaurant database.
-#     for n in range(num_restaurants):
-#         m = dict(
-#             name="Restaurant-" + str(n),
-#         )
-#         restaurant_id = db.restaurant.insert(**m)  # save the ID of the new restaurant
-#         # For each restaurant, add num_items_per_restaurant
-#         for m in range(num_items_per_restaurant):
-#             food_name = random.choice(FOOD_NAMES)
-#             food_description = random.choice(FOOD_DESCRIPTIONS)
-#             item = dict(
-#                 name=food_name,
-#                 description=food_description,
-#                 restaurant_id=restaurant_id  # assign the restaurant_id to the item
-#             )
-#             db.item.insert(**item)
-
-#     db.commit()
+def add_restaurants_for_testing(num_restaurants, num_items_per_restaurant):
+    clear_databases()
+    # Add num_restaurants to restaurant database.
+    for n in range(num_restaurants):
+        m = dict(
+            name="Restaurant-" + str(n),
+        )
+        restaurant_id = db.restaurant.insert(**m)  # save the ID of the new restaurant
+        # For each restaurant, add num_items_per_restaurant
+        for m in range(num_items_per_restaurant):
+            food_name = random.choice(FOOD_NAMES)
+            food_description = random.choice(FOOD_DESCRIPTIONS)
+            item = dict(
+                name=food_name,
+                description=food_description,
+                restaurant_id=restaurant_id  # assign the restaurant_id to the item
+            )
+            db.item.insert(**item)
+    db.commit()
 
 # # # Create 5 restaurants each with 10 items
-# add_restaurants_for_testing(5, 10)
+#add_restaurants_for_testing(5, 10)
 

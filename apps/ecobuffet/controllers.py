@@ -40,8 +40,10 @@ def contact_us():
 @action('landing')
 @action.uses('landing.html', db, auth.user, url_signer)
 def index():
+    print(f"ID: {auth.user_id}")
     return dict(
         # Signed URLs
+        user_id = auth.user_id,
         get_restaurants_url = URL("get_restaurants", signer=url_signer),
         get_items_url = URL("get_items", signer=url_signer), 
         add_items_url = URL("add_items", 'index', signer=url_signer),
@@ -52,21 +54,29 @@ def index():
 PASSWORD = '123'  
 
 @action('admin/<restaurant_id:int>', method=["GET", "POST"])
-@action.uses('admin.html', session, url_signer)  
+@action.uses('admin.html', session, auth.user, url_signer)  
 def admin(restaurant_id=None):
     assert restaurant_id is not None
+    print("Entering admin mode!")
+        
+    restaurant = db(db.restaurant.id == restaurant_id).select().first()  
+    restaurant_name = restaurant.name if restaurant else ""
+    if auth.user_id not in restaurant.authorized_users or restaurant.created_by != auth.user_id:
+        return HTTP(401, 'Unauthorized')
 
-    password = request.forms.get('password')  
+    password = request.forms.get('password')
     if request.method == "POST":
         if password != PASSWORD:
             return HTTP(401, 'Unauthorized')
 
-    restaurant = db(db.restaurant.id == restaurant_id).select().first()  
-    restaurant_name = restaurant.name if restaurant else ""  
-
     return dict(
         restaurant_id = restaurant_id,
-        restaurant_name = restaurant_name,  
+        restaurant_name = restaurant_name,
+        search_url = URL("search", signer=url_signer),
+        add_authorized_user_url = URL("add_authorized_user", signer=url_signer),
+        delete_authorized_user_url = URL("delete_authorized_user", signer=url_signer),
+        get_users_url = URL("get_users", signer=url_signer),
+        get_special_users_url = URL("get_authorized_users", signer=url_signer),
         get_restaurants_url = URL("get_restaurants", signer=url_signer),
         get_items_url = URL('get_items', vars=dict(restaurant_id=restaurant_id), signer=url_signer),
         add_items_url = URL("add_items", 'admin', vars=dict(restaurant_id=restaurant_id), signer=url_signer),
@@ -74,7 +84,84 @@ def admin(restaurant_id=None):
         remove_items_url = URL("remove_items", 'admin', vars=dict(restaurant_id=restaurant_id), signer=url_signer),
     )
 
+@action('search', method=["GET"])
+@action.uses()
+def search():
+    # Search for the text in the user db.
+    results = []
+    user_search = request.params.get("query")
+    print(f"Adding query - {user_search}")
+    users = db(db.auth_user).select()
+    print(users)
+    # Slice the array so we can see if the initial
+    # string matches.
+    for u in users:
+        try:
+            if user_search == u.username[0:len(user_search)]:
+                results.append(u)
+        except IndexError:
+            pass
+    return dict(results=results)
 
+
+@action("get_authorized_users", method=["GET","POST"])
+@action.uses(db, auth.user)
+def get_authorized_users():
+    restaurant_id = request.params.get("restaurant_id")
+    print(restaurant_id)
+    restaurant = db(db.restaurant.id == restaurant_id).select().first()
+    names = []
+    users = db(db.auth_user).select().as_list()
+    for user in users:
+        for id in restaurant["authorized_users"]:
+            if id == user["id"]:
+                names.append(user["username"])
+    return dict(authorized_users=names)
+    
+
+@action("add_authorized_user", method=["GET","POST"])
+@action.uses(db, auth.user)
+def add_authorized_user():
+    user = request.params.get("user")
+    restaurant_id = request.params.get("restaurant_id")
+    print(f"Adding authorized user #{user}")
+    print(f"Adding authorized user to restaurant #{restaurant_id}")
+    restaurant = db(db.restaurant.id == restaurant_id).select().first()
+    if int(user) not in restaurant["authorized_users"]:
+        restaurant["authorized_users"] += [user]
+    db(db.restaurant.id == restaurant_id).update(authorized_users = restaurant["authorized_users"])
+    print(restaurant["authorized_users"])
+    db.commit()
+    names = []
+    users = db(db.auth_user).select().as_list()
+    for user in users:
+        for id in restaurant["authorized_users"]:
+            if id == user["id"]:
+                names.append(user["username"])
+    return dict(authorized_users=names)
+
+@action("delete_authorized_user", method=["GET","POST"])
+@action.uses(db, auth.user, url_signer.verify())
+def delete_authorized_user():
+    user = request.params.get("user")
+    restaurant_id = request.params.get("restaurant_id")
+    if user == -1:
+        return
+    print(f"Removing authorized user #{user}")
+    print(f"Removing authorized user to restaurant #{restaurant_id}")
+    restaurant = db(db.restaurant.id == restaurant_id).select().first()
+    if int(user) in restaurant["authorized_users"]:
+        restaurant["authorized_users"].remove(int(user))
+    db(db.restaurant.id == restaurant_id).update(authorized_users = restaurant["authorized_users"])
+    print(restaurant["authorized_users"])
+    db.commit()
+    names = []
+    users = db(db.auth_user).select().as_list()
+    for user in users:
+        for id in restaurant["authorized_users"]:
+            if id == user["id"]:
+                names.append(user["username"])
+    return dict(authorized_users=names)
 
 # Get a list of all users.
 @action("get_users")
@@ -88,7 +175,7 @@ def get_users():
 @action.uses(db, auth.user)
 def get_restaurants():
     restaurants = db(db.restaurant).select().as_list()
-    return dict(restaurants=restaurants)
+    return dict(restaurants=restaurants, user_id=auth.user_id)
 
 # Define a new action to handle restaurant-specific URLs.
 @action('restaurants/<restaurant_id:int>')
@@ -168,7 +255,7 @@ def add_restaurant():
     form = Form(db.restaurant, csrf_session=session, formstyle=FormStyleBulma)
     
     if form.accepted:
-        redirect(URL('index'))
+        redirect(URL('landing'))
     return dict(form=form)
 
 # Edit an item using the Vue.js methods

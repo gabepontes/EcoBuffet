@@ -77,7 +77,7 @@
                           </a>
                       </p>
                       <!-- Link to the restaurant's admin page. -->
-                      <p class="subtitle is-6">
+                      <p v-if="restaurant.authorized_users.includes(user_id)" class="subtitle is-6">
                           <a :href="'/ecobuffet/admin/' + restaurant.id"
                              :class="{'has-text-light': !light_mode}">
                              Admin

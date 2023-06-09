@@ -1,50 +1,76 @@
 [[extend 'layout.html']]
 
 <div id="vue-target" data-restaurant-id="[[=restaurant_id]]">
-    <div class="section" id="vue-target" v-cloak>
-        <h1 class="title has-text-centered">Admin Page for [[=restaurant_name]]</h1>
-        <a class="button is-normal return-button" href="[[=URL('index')]]">
-            <i class="fa fa-arrow-left"> Return to Main Menu</i>
-        </a>
+    <h1 class="level-item title has-text-centered my-6">Admin Page - [[=restaurant_name]]</h1>
+    <div class="level section" id="vue-target" v-cloak>
+        <div class="level-left">
+            <a class="level-item button is-normal return-button" href="[[=URL('landing')]]">
+                <i class="fa fa-arrow-left"> Return to Main Menu</i>
+            </a>
+        </div>
+        <div class="level-right">
+            <a class="level-item button is-info" @click="toggle_set_search">Modify Administrator Users</a>
+        </div>
     </div>
-  <div class="tabs is-centered is-boxed is-medium">
-  </div>
+    <div class="tabs is-centered is-boxed is-medium"></div>
+
+<!-- Add Auth Users Form -->
+    <div class="box" v-if="set_search === true">
+        <label class="label">Authenticated Users</label>
+        <div v-for="user in authenticated_users">
+            <div class="box is-shadowless">{{user}}</div>
+        </div>
+        <label class="label">Modify Administrator Users</label>
+        <div class="field">
+            <p class="control has-icons-right">
+                <input class="input" type="text" v-model="search_text" @keyup="search" placeholder="Search users">
+                <span class="icon is-small is-right clickable" @click="search_text=''; search()">
+                    <i class="fa fa-times-circle"></i>
+                </span>
+            </p>
+        </div>
+        <div v-for="user in users" class="box">
+            <span class="mx-3">{{user.username}}</span>
+            <button class="button" @click="add_authorized_user(user)">Add</button>
+            <button class="button" @click="delete_authorized_user(user)">Remove</button>
+        </div>
+        
+        <div class="button" @click="toggle_set_search">Close</div>
+    </div>
 
 <!-- Add Item Form -->
 <div class="box" v-if="tab === 'add' || items.length === 0">
-    <form @submit.prevent="addItem">
-        <div class="field">
-            <label class="label">Item name</label>
-            <div class="control">
-                <input class="input" type="text" v-model="newItem.name" placeholder="Item name">
-            </div>
+    <div class="field">
+        <label class="label">Item name</label>
+        <div class="control">
+            <input class="input" type="text" v-model="newItem.name" placeholder="Item name">
         </div>
+    </div>
 
-        <div class="field">
-            <label class="label">Item description</label>
-            <div class="control">
-                <input class="input" type="text" v-model="newItem.description" placeholder="Item description">
-            </div>
+    <div class="field">
+        <label class="label">Item description</label>
+        <div class="control">
+            <input class="input" type="text" v-model="newItem.description" placeholder="Item description">
         </div>
+    </div>
 
-        <div class="file has-name is-fullwidth">
-            <label class="file-label">
-                <input class="file-input" type="file" ref="file" @change="handleFileUpload">
-                <span class="file-cta">
-                    <span class="file-icon">
-                        <i class="fas fa-upload"></i>
-                    </span>
-                    <span class="file-label">Choose a file…</span>
+    <div class="file has-name is-fullwidth my-2">
+        <label class="file-label">
+            <input class="file-input" type="file" ref="file" @change="handleFileUpload">
+            <span class="file-cta">
+                <span class="file-icon">
+                    <i class="fas fa-upload"></i>
                 </span>
-            </label>
+                <span class="file-label">Choose a file…</span>
+            </span>
+        </label>
+    </div>
+    
+    <div class="field is-grouped">
+        <div class="control">
+            <button class ="button is-success" @click="addItem()">Add</button>
         </div>
-        
-        <div class="field is-grouped">
-            <div class="control">
-                <button class ="button is-success" @click="is-link();tab = 'sevenkevintortilla'">Add</button>
-            </div>
-        </div>
-    </form>
+    </div>
 </div>
 
 <!-- Edit Item Form -->
@@ -74,7 +100,7 @@
         </div>
     </div>
 
-    <div class="file has-name is-fullwidth">
+    <div class="file has-name is-fullwidth my-2">
         <label class="file-label">
             <input class="file-input" type="file" ref="editFile" @change="handleEditFileUpload">
             <span class="file-cta">
@@ -87,7 +113,7 @@
 
     <div class="field is-grouped">
         <div class="control">
-            <button class="button is-link" @click="editItem(); tab = adder">Edit</button>
+            <button class="button is-link" @click="editItem();tab=''">Edit</button>
         </div>
     </div>
 </div>
@@ -101,7 +127,7 @@
                 <p class="title">{{item.name}}</p>
                 <button class ="button is-success" @click="tab = 'add'">Add</button>
                 <button class ="button is-info" @click="populateItemDetails(item.id); tab = 'edit'">Edit Item</button>
-                <button class="button is-danger" @click="selectedItemId = item.id; removeItem()">Remove</button>
+                <button class ="button is-danger" @click="selectedItemId = item.id; removeItem()">Remove</button>
             </div>
         </div>
     </div>
@@ -113,6 +139,11 @@
 
   [[block page_scripts]]
   <script>
+    let search_url = "[[=XML(search_url)]]";
+    let add_authorized_user_url = "[[=XML(add_authorized_user_url)]]";
+    let delete_authorized_user_url = "[[=XML(delete_authorized_user_url)]]";
+    let get_users_url = "[[=XML(get_users_url)]]";
+    let get_authorized_users_url = "[[=XML(get_special_users_url)]]"
     let getRestaurantsUrl = "[[=XML(get_restaurants_url)]]";
     let getItemsUrl = "[[=XML(get_items_url)]]";
     let addItemsUrl = "[[=XML(add_items_url)]]";

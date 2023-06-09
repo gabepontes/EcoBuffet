@@ -5,15 +5,18 @@ function init() {
     // This is the Vue data.
     self.data = {
         light_mode: localStorage.getItem('light_mode') == 'true',  // Load the light mode state from local storage
-        restaurants: []
+        restaurants: [],
+        user_id: null
     };
 
     self.fetch_restaurants = function() {
         axios.get(get_restaurants_url)
             .then(function(response) {
                 self.data.restaurants = response.data.restaurants;
+                self.data.user_id = response.data.user_id
             });
     };
+
 
     self.toggle_light_mode = function() {
         if (self.vue.light_mode == true) {

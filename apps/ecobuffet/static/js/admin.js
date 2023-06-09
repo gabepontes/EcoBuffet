@@ -16,6 +16,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 selectedItemName: null,
                 selectedItemDescription: null, 
                 selectedItemImage: null, 
+                search_text: "",
+                users: [],
+                set_search: false,
+                authenticated_users: []
             }
         },
         
@@ -28,7 +32,50 @@ document.addEventListener('DOMContentLoaded', (event) => {
         },
         
         methods: {
+
+            toggle_set_search: function() {
+                this.set_search = !this.set_search;
+            },
+
+            search: function() {
+                // We search based on the query being set by the search box.
+                if (app.search_text.length > 0) {
+                    axios.get(search_url, {params: {query: app.search_text}})
+                    .then(function (result) {
+                        app.users = result.data.results;
+                        console.log("Got search results!")
+                    })
+                }
+                else {
+                    app.users = []
+                    console.log("Cleared available users!")
+                }
+            },
             
+            add_authorized_user: function(user) {
+                axios.get(add_authorized_user_url, {params: {user: user.id, restaurant_id: this.restaurant_id}})
+                    .then((response) => {
+                        app.authenticated_users = response.data.authorized_users;
+                        app.get_authorized_users();
+                    });
+            },
+            
+            delete_authorized_user: function(user) {
+                axios.get(delete_authorized_user_url, {params: {user: user.id, restaurant_id: this.restaurant_id}})
+                    .then((response) => {
+                        app.authenticated_users = response.data.authorized_users;
+                        app.get_authorized_users();
+                    });
+            },
+
+            get_authorized_users: function() {
+                console.log(this.restaurant_id)
+                axios.get(get_authorized_users_url, {params: {restaurant_id: this.restaurant_id}})
+                    .then((response) => {
+                        app.authenticated_users = response.data.authorized_users;
+                    });
+            },
+
             getRestaurants: function() {
                 axios.get(getRestaurantsUrl)
                     .then((response) => {
@@ -125,4 +172,5 @@ document.addEventListener('DOMContentLoaded', (event) => {
             this.getItems();
         }
     });
+    app.get_authorized_users();
 });

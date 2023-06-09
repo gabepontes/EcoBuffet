@@ -9,11 +9,11 @@
             <button class="button is-light" v-on:click="toggle_light_mode" v-else>
                 <span class="icon is-small"><i class="fa fa-sun-o"></i></span>
             </button>
+            <a class="button is-normal return-button" :class="{'is-dark': !light_mode, 'is-light': light_mode}" href="[[=URL('landing')]]">
+                <i class="fa fa-arrow-left" :class="{'has-text-light': !light_mode, 'has-text-dark': light_mode}">Return to Main Menu</i>
+            </a>
         </div>
     </div>
-    <a class="button is-normal return-button" :class="{'is-dark': !light_mode, 'is-light': light_mode}" href="[[=URL('index')]]">
-        <i class="fa fa-arrow-left" :class="{'has-text-light': !light_mode, 'has-text-dark': light_mode}">Return to Main Menu</i>
-    </a>
     <h1 class="title has-text-centered restaurant-name">{{restaurant_name}}</h1>
     <div class="section" id="vue-target" v-cloak>
         <div class="box">
@@ -41,21 +41,22 @@
             </div>
         </div>
     </div>
-    
-    [[block page_scripts]]
-    <!-- Loads the index-specific js for Vue -->
-    <script>
-      let get_restaurants_url = "[[=XML(get_restaurants_url)]]";
-      let get_restaurant_name_url = "[[=XML(get_restaurant_name_url)]]";
-      let get_items_url = "[[=XML(get_items_url)]]";
-      let like_item_url = "[[=XML(like_item_url)]]";
-      let dislike_item_url = "[[=XML(dislike_item_url)]]";
-    </script>
-    
-    <script src="js/axios.js"></script>
-    <script src="js/sugar.js"></script>
-    <script src="js/restaurant.js"></script>
-    [[end]]
+</div>
+
+[[block page_scripts]]
+<!-- Loads the index-specific js for Vue -->
+<script>
+let get_restaurants_url = "[[=XML(get_restaurants_url)]]";
+let get_restaurant_name_url = "[[=XML(get_restaurant_name_url)]]";
+let get_items_url = "[[=XML(get_items_url)]]";
+let like_item_url = "[[=XML(like_item_url)]]";
+let dislike_item_url = "[[=XML(dislike_item_url)]]";
+</script>
+
+<script src="js/axios.js"></script>
+<script src="js/sugar.js"></script>
+<script src="js/restaurant.js"></script>
+[[end]]
 
 
 

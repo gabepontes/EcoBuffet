@@ -80,3 +80,6 @@ ALTER TABLE "restaurant" ADD "description" TEXT;
 timestamp: 2023-06-07T23:07:52.483398
 ALTER TABLE "restaurant" ADD "password" CHAR(512);
 success!
+timestamp: 2023-06-08T21:46:04.513336
+ALTER TABLE "restaurant" ADD "authorized_users" TEXT;
+success!
