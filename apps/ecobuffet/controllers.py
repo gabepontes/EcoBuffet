@@ -58,8 +58,10 @@ PASSWORD = '123'
 def admin(restaurant_id=None):
     assert restaurant_id is not None
     print("Entering admin mode!")
-        
-    restaurant = db(db.restaurant.id == restaurant_id).select().first()  
+    
+    restaurant = db(db.restaurant.id == restaurant_id).select().first()
+    if restaurant.authorized_users == None:
+        redirect(URL('landing'))
     restaurant_name = restaurant.name if restaurant else ""
     if auth.user_id not in restaurant.authorized_users or restaurant.created_by != auth.user_id:
         return HTTP(401, 'Unauthorized')
@@ -241,7 +243,7 @@ def add_items(restaurant_id=None):
     else:
         form = Form(db.item, csrf_session=session, formstyle=FormStyleBulma)
         if form.accepted:
-            redirect(URL('index'))
+            redirect(URL('landing'))
         return dict(form=form)
 
 
@@ -295,7 +297,7 @@ def remove_items(restaurant_id=None, item_id=None):
         raise HTTP(404, f"Item with id {item_id} not found")
     else:
         db(db.item.id == item_id).delete()
-        redirect(URL('index'))
+        redirect(URL('landing'))
 
 # Action to like an item
 @action('like_item', method="POST")
