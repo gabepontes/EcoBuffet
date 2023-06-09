@@ -141,18 +141,18 @@ function init() {
             // Toggle text color for restaurant title and menu items
             let titles = document.getElementsByClassName("restaurant-title");
             for (var i = 0; i < titles.length; i++) {
-                console.log("titles")
+                // console.log("titles")
                 titles.item(i).classList.add("has-text-light");
             }
             let restaurantName = document.getElementsByClassName("restaurant-name");
             for (var i = 0; i < restaurantName.length; i++) {
-                console.log("restaurant")
+                // console.log("restaurant")
                 restaurantName.item(i).classList.add("has-text-light");
             }
             // Here's the new piece for menu items
             let menuItems = document.getElementsByClassName("menu-item");
             for (var i = 0; i < menuItems.length; i++) {
-                console.log("menu")
+                // console.log("menu")
                 menuItems.item(i).classList.add("has-text-light");
             }
         }

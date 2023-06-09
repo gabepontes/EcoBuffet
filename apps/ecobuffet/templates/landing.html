@@ -53,13 +53,13 @@
         <span class="icon is-small"><i class="fa fa-sun-o"></i></span>
       </button>
     </div>
-    <!-- Add New Restaurant Button -->
-    <div class="control">
-      <a class="button is-info" href="/ecobuffet/add_restaurant">
-        <span class="icon is-small"><i class="fa fa-plus"></i></span>
-        <span>Add New Restaurant</span>
-      </a>
-    </div>
+  </div>
+  <!-- Add New Restaurant Button -->
+  <div class="control">
+    <a class="button is-info" href="/ecobuffet/add_restaurant">
+      <span class="icon is-small"><i class="fa fa-plus"></i></span>
+      <span>Add New Restaurant</span>
+    </a>
   </div>
   <!-- Restaurants Section -->
   <div class="box">
@@ -71,19 +71,30 @@
                   <div class="card-content">
                       <!-- Link to the restaurant's page. -->
                       <p class="title is-4">
-                          <a :href="'/ecobuffet/restaurants/' + restaurant.id" 
-                             :class="{'has-text-light': !light_mode}">
+                          <a :href="'/ecobuffet/restaurants/' + restaurant.id">
                              {{restaurant.name}}
                           </a>
                       </p>
-                      <!-- Link to the restaurant's admin page. -->
-                      <p v-if="restaurant.authorized_users.includes(user_id)" class="subtitle is-6">
-                          <a :href="'/ecobuffet/admin/' + restaurant.id"
-                             :class="{'has-text-light': !light_mode}">
-                             Admin
-                          </a>
+                      <p :class="{'has-text-light': !light_mode}">
+                        {{restaurant.description}}
                       </p>
                   </div>
+                  <footer class="card-footer" style="border-top:1px solid dimgray" v-if="light_mode == false">
+                    <!-- Link to the restaurant's admin page. Dark Mode-->
+                    <p v-if="restaurant.authorized_users.includes(user_id)" class="subtitle is-6 has-text-centered card-footer-item">
+                      <a :href="'/ecobuffet/admin/' + restaurant.id">
+                         Admin
+                      </a>
+                    </p>
+                  </footer>
+                  <footer class="card-footer" v-else>
+                    <!-- Link to the restaurant's admin page. Light Mode-->
+                    <p v-if="restaurant.authorized_users.includes(user_id)" class="subtitle is-6 has-text-centered card-footer-item">
+                      <a :href="'/ecobuffet/admin/' + restaurant.id">
+                         Admin
+                      </a>
+                    </p>
+                  </footer>
               </div>
           </div>
       </div>
