@@ -190,6 +190,7 @@ def restaurant_page(restaurant_id=None):
 
     return dict(
         get_restaurants_url = URL("get_restaurants", signer=url_signer),
+        get_user_likes_url = URL("get_user_likes", vars=dict(restaurant_id=restaurant_id), signer=url_signer),
         get_items_url = URL('get_items', vars=dict(restaurant_id=restaurant_id), signer=url_signer),
         get_restaurant_name_url = URL('get_restaurant_name', vars=dict(restaurant_id=restaurant_id), signer=url_signer),
         like_item_url = URL("like_item", signer=url_signer),
@@ -220,6 +221,14 @@ def get_items():
     print(f"restaurant_id: {restaurant_id}")
     items = db(db.item.restaurant_id == int(restaurant_id)).select().as_list()
     return dict(items=items)
+
+# Get list of all users likes and dislikes of restuarant items
+@action("get_user_likes")
+@action.uses(db, auth.user)
+def get_user_likes():
+    restaurant_id = request.params.get('restaurant_id')
+    user_likes = db(db.user_item_preference.restaurant_id == int(restaurant_id)).select().as_list()
+    return dict(user_likes=user_likes)
 
 
 # Add a new item to the overall item database.
@@ -303,23 +312,64 @@ def remove_items(restaurant_id=None, item_id=None):
 @action('like_item', method="POST")
 @action.uses(db, auth.user)
 def like_item():
+    me = auth.current_user.get("username")
     item_id = request.json.get("item_id")
-    db(db.item.id == item_id).update(likes=db.item.likes+1)
-    row_likes = db(db.item.id == item_id).select()
-    for row in row_likes:
-        likes = row.likes
-    return dict(status="success",message="Item liked successfully",likes=likes)
+    delete = request.json.get("del")
+    name = db.item[item_id].name
+    restaurant_id = db.item[item_id].restaurant_id
+    if (delete == False):
+        item = dict(
+            restaurant_id= restaurant_id,
+            item_name=name,
+            user=me,
+            like=True
+        )
+        db.user_item_preference.insert(**item)
+        db(db.item.id == item_id).update(likes=db.item.likes+1)
+        row_likes = db(db.item.id == item_id).select()
+        for row in row_likes:
+            likes = row.likes
+        return dict(status="success",message="Item liked successfully",likes=likes)
+    else:
+        db((db.user_item_preference.item_name == name) & 
+           (db.user_item_preference.restaurant_id == restaurant_id)).delete()
+        db(db.item.id == item_id).update(likes=db.item.likes-1)
+        row_likes = db(db.item.id == item_id).select()
+        for row in row_likes:
+            likes = row.likes
+        return dict(status="success",message="Item unliked successfully",likes=likes)
+    
 
 # Action to dislike an item
 @action('dislike_item', method="POST")
 @action.uses(db, auth.user)
 def dislike_item():
+    me = auth.current_user.get("username")
     item_id = request.json.get("item_id")
-    db(db.item.id == item_id).update(dislikes=db.item.dislikes+1)
-    row_dislikes = db(db.item.id == item_id).select()
-    for row in row_dislikes:
-        dislikes = row.dislikes
-    return dict(status="success",message="Item disliked successfully",dislikes=dislikes )
+    delete = request.json.get("del")
+    name = db.item[item_id].name
+    restaurant_id = db.item[item_id].restaurant_id
+    if (delete == False):
+        item = dict(
+            restaurant_id= restaurant_id,
+            item_name=name,
+            user=me,
+            like=False
+        )
+        db.user_item_preference.insert(**item)
+        db(db.item.id == item_id).update(dislikes=db.item.dislikes+1)
+        row_dislikes = db(db.item.id == item_id).select()
+        for row in row_dislikes:
+            dislikes = row.dislikes
+        return dict(status="success",message="Item disliked successfully",dislikes=dislikes )
+    else:
+        db((db.user_item_preference.item_name == name) & 
+           (db.user_item_preference.restaurant_id == restaurant_id)).delete()
+        db(db.item.id == item_id).update(dislikes=db.item.dislikes-1)
+        row_dislikes = db(db.item.id == item_id).select()
+        for row in row_dislikes:
+            dislikes = row.dislikes
+        return dict(status="success",message="Item undisliked successfully",dislikes=dislikes )
 
 @action('dashboard')
 @action.uses('dashboard.html', db, auth.user, url_signer)

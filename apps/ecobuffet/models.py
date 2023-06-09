@@ -47,6 +47,14 @@ db.define_table(
 )
 
 db.define_table(
+    "user_item_preference",
+    Field("restaurant_id", "reference restaurant"),
+    Field("item_name"),
+    Field("user"),
+    Field("like")
+)
+
+db.define_table(
     "day_by_day",
     Field('item_id', 'reference item'),
     Field("restaurant_id", "reference restaurant")

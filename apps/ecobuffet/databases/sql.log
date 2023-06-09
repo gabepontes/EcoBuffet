@@ -83,3 +83,23 @@ success!
 timestamp: 2023-06-08T21:46:04.513336
 ALTER TABLE "restaurant" ADD "authorized_users" TEXT;
 success!
+timestamp: 2023-06-09T11:32:21.823894
+CREATE TABLE "user_item_preference"(
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "item_name" CHAR(512),
+    "auth_user" CHAR(512),
+    "like" CHAR(512)
+);
+success!
+timestamp: 2023-06-09T11:48:50.886517
+ALTER TABLE "user_item_preference" ADD "user" CHAR(512);
+success!
+success!
+timestamp: 2023-06-09T11:52:48.935967
+ALTER TABLE "user_item_preference" ADD "restaurant_id" INTEGER REFERENCES "restaurant" ("id") ON DELETE CASCADE ON UPDATE CASCADE  ;
+success!
+success!
+success!
+success!
+success!
+success!

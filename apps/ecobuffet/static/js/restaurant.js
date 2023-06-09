@@ -10,7 +10,8 @@ function init() {
         items: [],
         formatted_items: [],
         restaurant_id: null,
-        restaurant_name: null
+        restaurant_name: null,
+        user_likes: []
     };
 
 
@@ -27,6 +28,13 @@ function init() {
             self.data.restaurant_name = response.data.restaurant_name;
         });
     }
+
+    self.get_user_likes = function(restaurant_id) {
+        self.data.restaurant_id = restaurant_id;
+        axios.get(get_user_likes_url, {params: {restaurant_id: self.data.restaurant_id}}).then(function (response) {
+            self.data.user_likes = response.data.user_likes;
+        });
+    }
     
     self.display_menu = function(restaurant_id) {
         self.data.restaurant_id = restaurant_id;
@@ -38,24 +46,67 @@ function init() {
 
     self.like_item = function(item_idx) {
         // Perform liking the item
-        item = self.data.items[item_idx]
-        axios.post(like_item_url, {item_id: item.id})
-            .then(function(response) {
-                // Update the likes for this item in the data array
-                var likedItem = self.data.items[item_idx];
-                likedItem.likes = response.data.likes;
-            });
+        item = self.data.items[item_idx];
+        let del = false;
+        let action = true;
+        if (self.data.user_likes.some(obj => obj.item_name == item.name)) {
+            //console.log("found item")
+            for (let i = 0; i < self.data.user_likes.length; i++) {
+                // If item is disliked, don't do anything else delete the like
+                let like_item = self.data.user_likes[i]
+                if (like_item.item_name == item.name && like_item.like == "False") {
+                    //console.log("not doing anything")
+                    action = false;
+                    break;
+                }
+            } 
+            if (action == true) {
+                //console.log("deleting")
+                    del = true;
+            }
+        }
+        if (action == true) {
+            axios.post(like_item_url, { item_id: item.id, del: del })
+                .then(function (response) {
+                    // Update the likes for this item in the data array
+                    var likedItem = self.data.items[item_idx];
+                    likedItem.likes = response.data.likes;
+                    self.get_user_likes();
+                });
+        }
     };
 
     self.dislike_item = function(item_idx) {
         // Perform disliking the item
         item = self.data.items[item_idx]
-        axios.post(dislike_item_url, {item_id: item.id})
-            .then(function(response) {
-                // Update the dislikes for this item in the data array
-                var dislikedItem = self.data.items[item_idx];
-                dislikedItem.dislikes = response.data.dislikes;
-            });
+        let del = false;
+        let action = true;
+        if (self.data.user_likes.some(obj => obj.item_name == item.name)) {
+            //console.log("found item")
+            for (let i = 0; i < self.data.user_likes.length; i++) {
+                let like_item = self.data.user_likes[i]
+                // If item is liked, don't do anything else delete the dislike
+                if (like_item.item_name == item.name && like_item.like == "True") {
+                    //console.log("not doing anything")
+                    action = false;
+                    break;
+                }
+            } 
+            if (action == true) {
+                //console.log("deleting")
+                del = true;
+            }
+        }
+        if (action == true) {
+            axios.post(dislike_item_url, { item_id: item.id, del: del })
+                .then(function (response) {
+                    // Update the dislikes for this item in the data array
+                    var dislikedItem = self.data.items[item_idx];
+                    dislikedItem.dislikes = response.data.dislikes;
+                    self.get_user_likes();
+                });
+        }
+        
     };
 
     self.get_formatted_items = function() {
@@ -184,6 +235,7 @@ function init() {
     });
 
     self.get_restaurant_name();
+    self.get_user_likes();
     self.display_menu();
 
     self.page_load();
