@@ -4,8 +4,7 @@ function init() {
 
     // This is the Vue data.
     self.data = {
-        users: [], 
-        user_likes: [],
+        users: [],
         orders: [], 
         light_mode: localStorage.getItem('light_mode') == 'true',
         restaurant_name: "",
@@ -52,26 +51,21 @@ function init() {
             });
     };    
 
-    self.fetch_orders = function() {
-        axios.get(get_items_url)
-            .then(function(response) {
-                self.data.orders = response.data.items;
-            });
-    };
-    /*
-    self.get_user_likes = function(restaurant_id) {
+    self.fetch_orders = function(restaurant_id) {
         self.data.restaurant_id = restaurant_id;
-        axios.get(get_user_likes_url, {params:{restaurant_id: self.data.restaurant_id}}).then(function (response) {
-            self.data.user_likes = response.data.user_likes;
+        axios.get(get_items_url, {params: {restaurant_id: self.data.restaurant_id}}).then(function (response) {
+            self.data.orders = response.data.items;
+            self.data.orders.sort(function(x, y) {
+                return (x.likes == y.likes) ? 0 : x.likes ? -1 : 1;
+            });
         });
-    }
-    */
+    };
+
     self.get_restaurant_name = function(restaurant_id) {
         self.data.restaurant_id = restaurant_id;
-        console.log(self.data.restaurant_id)
         axios.get(get_restaurant_name_url).then(function (response) {
             self.data.restaurant_name = response.data.restaurant_name;
-            console.log(self.data.restaurant_name)
+            self.data.restaurant_description = response.data.restaurant_description;
         });
     }
     self.modify_restaurant_description = function(restaurant_id) {
@@ -117,8 +111,7 @@ function init() {
     // Fetch restaurants when the page loads
     self.fetch_users();
     self.get_restaurant_name();
-//    self.get_user_likes();
-    //self.fetch_orders();
+    self.fetch_orders();
 
     self.page_load();
     

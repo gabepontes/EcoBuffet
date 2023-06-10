@@ -26,7 +26,10 @@
                 <span>Return to Restaurant</span>
         </a>
     </div>
-    <div class="block"></div>
+    <div class="block has-text-centered">
+        <h2 class="title":class="{'has-text-light': !light_mode}">{{restaurant_name}}</h2>
+        <h2 class="subtitle":class="{'has-text-light': !light_mode}">{{restaurant_description}}</h2>
+    </div>
     <div class="columns">
         <div class="column">
             <div class="box">
@@ -39,8 +42,8 @@
         <div class="column">
             <div class="box">
                 <h2 class="title" :class="{'has-text-light': !light_mode}">Most Liked Items</h2>
-                <div v-for="order in orders" :class="{'has-text-light': !light_mode}">
-                    {{order.name}}
+                <div v-for="item in orders" :class="{'has-text-light': !light_mode}">
+                    {{item.name}} : {{item.likes}} likes
                 </div>
             </div>
         </div>
@@ -52,14 +55,14 @@
                     <p class="control has-icons-right">
                         <input class="input" type="text" v-model="restaurant_name" placeholder="Name Here">
                     </p>
-                    <button class="button my-3 is-success" @click="modify_restaurant_name([[=str(restaurant_id)]])">Submit</button>
+                    <button class="button my-3 is-success" @click="modify_restaurant_name([[=str(restaurant_id)]])">Save</button>
                 </div>
                 <label class="label" :class="{'has-text-light': !light_mode}">Modify Restaurant Description</label>
                 <div class="field">
                     <p class="control has-icons-right">
                         <input class="input" type="text" v-model="restaurant_description" placeholder="Description Here">
                     </p>
-                    <button class="button my-3 is-success" @click="modify_restaurant_description([[=str(restaurant_id)]])">Submit</button>
+                    <button class="button my-3 is-success" @click="modify_restaurant_description([[=str(restaurant_id)]])">Save</button>
                 </div>
             </div>
         </div>

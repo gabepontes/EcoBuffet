@@ -191,13 +191,15 @@ def restaurant_page(restaurant_id=None):
 @action.uses(db, auth.user, url_signer.verify())
 def get_restaurant_name():
     restaurant_name=""
+    restaurant_description = ""
     restaurant_id = request.params.get('restaurant_id')
     print(f"restaurant_id: {restaurant_id}")
     restaurant_rows = db(db.restaurant.id == int(restaurant_id)).select()
     for row in restaurant_rows:
         restaurant_name = row.name
+        restaurant_description = row.description
     print(restaurant_name)
-    return dict(restaurant_name=restaurant_name)
+    return dict(restaurant_name=restaurant_name, restaurant_description=restaurant_description)
 
 # Adjust the get_items action to accept a restaurant_id parameter.
 @action('get_items')
@@ -383,7 +385,7 @@ def dashboard(restaurant_id=None):
         restaurant_name = restaurant.name,
         restaurant_description = restaurant.description,
         get_users_url = URL("get_users", signer=url_signer),
-        get_items_url = URL("get_items", signer=url_signer),
+        get_items_url = URL('get_items', vars=dict(restaurant_id=restaurant_id), signer=url_signer),
         get_user_likes_url = URL("get_user_likes", vars=dict(restaurant_id=restaurant_id), signer=url_signer),
         get_restaurant_name_url = URL('get_restaurant_name', vars=dict(restaurant_id=restaurant_id), signer=url_signer),
         modify_restaurant_description_url = URL("modify_restaurant_description", signer=url_signer),
