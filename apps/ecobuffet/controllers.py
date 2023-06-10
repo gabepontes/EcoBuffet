@@ -371,10 +371,11 @@ def dislike_item():
             dislikes = row.dislikes
         return dict(status="success",message="Item undisliked successfully",dislikes=dislikes )
 
-@action('dashboard')
+@action('dashboard/<restaurant_id:int>')
 @action.uses('dashboard.html', db, auth.user, url_signer)
-def dashboard():
+def dashboard(restaurant_id=None):
     return dict(
+        restaurant_id = restaurant_id,
         get_users_url = URL("get_users", signer=url_signer),
         get_items_url = URL("get_items", signer=url_signer)
     )

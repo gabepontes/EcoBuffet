@@ -14,9 +14,19 @@
 
     </div>
     <div>
-        <a :href="'/ecobuffet/index/'"
-           :class="{'has-text-light': !light_mode}">Home</a>
+        <a class="button is-normal return-button is-info" href="[[=URL('landing')]]">
+            <span class="icon is-small"><i class="fa fa-arrow-left"></i></span>
+                <span>Return to Main Menu</span>
+        </a>
     </div>
+    <div class="block"></div>
+    <div>
+        <a class="button is-normal return-button is-info" href="[[=URL('restaurants/' + str(restaurant_id))]]">
+            <span class="icon is-small"><i class="fa fa-arrow-left"></i></span>
+                <span>Return to Restaurant</span>
+        </a>
+    </div>
+    <div class="block"></div>
     <div class="columns">
         <div class="column">
             <div class="box">

@@ -18,6 +18,13 @@
                 <span>Return to Main Menu</span>
         </a>
     </div>
+    <div class="block"></div>
+    <div>
+        <a class="button is-normal return-button is-info" href="[[=URL('dashboard/' + str(restaurant_id))]]">
+            <span class="icon is-small"><i class="fa fa-info-circle"></i></span>
+                <span>Dashboard</span>
+        </a>
+    </div>
     <h1 class="title has-text-centered restaurant-name">{{restaurant_name}}</h1>
     <div class="section" id="vue-target" v-cloak>
         <div class="box">
