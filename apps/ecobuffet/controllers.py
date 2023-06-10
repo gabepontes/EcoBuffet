@@ -21,21 +21,6 @@ def landing():
         get_restaurants_url = URL("get_restaurants", signer=url_signer),
     )
 
-@action('about_us')
-@action.uses('about_us.html', db, auth.user, url_signer)
-def about_us():
-    return dict()
-
-@action('mission_statement')
-@action.uses('mission_statement.html', db, auth.user, url_signer)
-def mission_statement():
-    return dict()
-
-@action('contact_us')
-@action.uses('contact_us.html', db, auth.user, url_signer)
-def contact_us():
-    return dict()
-
 # Py4web actions.
 @action('landing')
 @action.uses('landing.html', db, auth.user, url_signer)
@@ -63,13 +48,11 @@ def admin(restaurant_id=None):
     if restaurant.authorized_users == None:
         redirect(URL('landing'))
     restaurant_name = restaurant.name if restaurant else ""
-    if auth.user_id not in restaurant.authorized_users or restaurant.created_by != auth.user_id:
+    print(auth.user_id not in restaurant.authorized_users)
+    print(auth.user_id)
+    print(restaurant.authorized_users)
+    if auth.user_id not in restaurant.authorized_users:
         return HTTP(401, 'Unauthorized')
-
-    password = request.forms.get('password')
-    if request.method == "POST":
-        if password != PASSWORD:
-            return HTTP(401, 'Unauthorized')
 
     return dict(
         restaurant_id = restaurant_id,
@@ -129,6 +112,7 @@ def add_authorized_user():
     print(f"Adding authorized user #{user}")
     print(f"Adding authorized user to restaurant #{restaurant_id}")
     restaurant = db(db.restaurant.id == restaurant_id).select().first()
+    # Don't add duplicates.
     if int(user) not in restaurant["authorized_users"]:
         restaurant["authorized_users"] += [user]
     db(db.restaurant.id == restaurant_id).update(authorized_users = restaurant["authorized_users"])
@@ -152,6 +136,8 @@ def delete_authorized_user():
     print(f"Removing authorized user #{user}")
     print(f"Removing authorized user to restaurant #{restaurant_id}")
     restaurant = db(db.restaurant.id == restaurant_id).select().first()
+
+    # Don't remove something that isn't there.
     if int(user) in restaurant["authorized_users"]:
         restaurant["authorized_users"].remove(int(user))
     db(db.restaurant.id == restaurant_id).update(authorized_users = restaurant["authorized_users"])
@@ -230,7 +216,6 @@ def get_user_likes():
     user_likes = db(db.user_item_preference.restaurant_id == int(restaurant_id)).select().as_list()
     return dict(user_likes=user_likes)
 
-
 # Add a new item to the overall item database.
 @action('add_items/<restaurant_id:int>/admin', method=["GET", "POST"])
 @action.uses(db, session, url_signer, 'add_items.html')
@@ -242,21 +227,19 @@ def add_items(restaurant_id=None):
             image = request.files.image
             if image.filename != '':
                 filename = secure_filename(image.filename)
-                filepath = os.path.join('static', 'uploads', filename)
+                filepath = os.path.join('apps','ecobuffet', 'static','images', filename)
+                filepath2 = os.path.join('ecobuffet', 'static','images', filename)
                 with open(filepath, 'wb') as f:
                     f.write(image.file.read())
         name = request.params.get('name')
         description = request.params.get('description')
-        db.item.insert(name=name, description=description, image=filepath, restaurant_id=restaurant_id)
+        db.item.insert(name=name, description=description, image=filepath2, restaurant_id=restaurant_id)
         return "success"
     else:
         form = Form(db.item, csrf_session=session, formstyle=FormStyleBulma)
         if form.accepted:
             redirect(URL('landing'))
         return dict(form=form)
-
-
-
 
 # Add a new restaurant to the overall restaurant database.
 @action('add_restaurant', method=["GET","POST"])
@@ -275,25 +258,36 @@ def add_restaurant():
 def edit_items(restaurant_id=None, item_id=None):
     assert restaurant_id is not None
     assert item_id is not None
-    name = request.forms.get("name")
-    description = request.forms.get("description")
-    image = request.files.get("image")
-    if not name or not description:
-        raise HTTP(400, "Item must have a name and description")
-    item_data = {"name": name, "description": description}
+    if request.method == "POST":
+        item = db.item[item_id]
+        if item is None:
+            raise HTTP(404)
+        
+        filepath = None
+        if 'image' in request.files:
+            image = request.files.image
+            if image.filename != '':
+                filename = secure_filename(image.filename)
+                filepath = os.path.join('apps','ecobuffet', 'static','images', filename)
+                filepath2 = os.path.join('ecobuffet', 'static','images', filename)
+                with open(filepath, 'wb') as f:
+                    f.write(image.file.read())
+                item.update_record(image=filepath2)
+                
+        name = request.params.get('name')
+        description = request.params.get('description')
+        if name is not None:
+            item.update_record(name=name)
+        if description is not None:
+            item.update_record(description=description)
 
-    if image:
-        filename = secure_filename(image.filename)
-        filename = f"{uuid.uuid4()}_{filename}"
-        image_path = os.path.join("uploads", filename)
-        image.save(image_path)
-        item_data["image"] = filename
-    updated_item = db(db.item.id == item_id).update(**item_data)
-    
-    if updated_item:
-        return {"status": "success", "item": item_data}
+        redirect(URL('landing'))
     else:
-        raise HTTP(404, f"Item with id {item_id} not found")
+        form = Form(db.item, record=db.item[item_id], csrf_session=session, formstyle=FormStyleBulma)
+        if form.accepted:
+            redirect(URL('landing'))
+        return dict(form=form)
+
 
 # Remove an item from the item db.
 @action('remove_items/<restaurant_id:int>/<item_id:int>/admin', method=["GET", "POST", "DELETE"])
@@ -374,8 +368,46 @@ def dislike_item():
 @action('dashboard/<restaurant_id:int>')
 @action.uses('dashboard.html', db, auth.user, url_signer)
 def dashboard(restaurant_id=None):
+    assert restaurant_id is not None
+    print("Entering dashboard mode!")
+    
+    restaurant = db(db.restaurant.id == restaurant_id).select().first()
+    if restaurant.authorized_users == None:
+        redirect(URL('landing'))
+    
+    if auth.user_id not in restaurant.authorized_users:
+        return HTTP(401, 'Unauthorized')
+
     return dict(
         restaurant_id = restaurant_id,
+        restaurant_name = restaurant.name,
+        restaurant_description = restaurant.description,
         get_users_url = URL("get_users", signer=url_signer),
-        get_items_url = URL("get_items", signer=url_signer)
+        get_items_url = URL("get_items", signer=url_signer),
+        get_user_likes_url = URL("get_user_likes", vars=dict(restaurant_id=restaurant_id), signer=url_signer),
+        get_restaurant_name_url = URL('get_restaurant_name', vars=dict(restaurant_id=restaurant_id), signer=url_signer),
+        modify_restaurant_description_url = URL("modify_restaurant_description", signer=url_signer),
+        modify_restaurant_name_url = URL("modify_restaurant_name", signer=url_signer)
     )
+
+
+# Action to modify restaurant name
+@action('modify_restaurant_name', method="POST")
+@action.uses(db, auth.user)
+def modify_restaurant_name():
+    restaurant_id = request.json.get("restaurant_id")
+    restaurant_name = request.json.get("restaurant_name")
+    print(f"MODIFY NAME: {restaurant_id}, {restaurant_name}")
+    db(db.restaurant.id == restaurant_id).update(name = restaurant_name)
+    return dict(name=restaurant_name)
+    
+
+# Action to modify restaurant description
+@action('modify_restaurant_description', method="POST")
+@action.uses(db, auth.user)
+def modify_restaurant_description():
+    restaurant_id = request.json.get("restaurant_id")
+    restaurant_description = request.json.get("restaurant_description")
+    print(f"MODIFY DESC: {restaurant_id}, {restaurant_description}")
+    db(db.restaurant.id == restaurant_id).update(description = restaurant_description)
+    return dict(description=restaurant_description)

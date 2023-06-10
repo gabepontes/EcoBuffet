@@ -7,10 +7,14 @@
             <a class="level-item button is-normal return-button" href="[[=URL('landing')]]">
                 <i class="fa fa-arrow-left"> Return to Main Menu</i>
             </a>
+            <button class ="button is-success card-footer-item" @click="tab = 'add'">Add</button>
         </div>
+
+        
         <div class="level-right">
             <a class="level-item button is-info" @click="toggle_set_search">Modify Administrator Users</a>
         </div>
+                <!-- Button for Dark/Light Mode-->
     </div>
     <div class="tabs is-centered is-boxed is-medium"></div>
 
@@ -61,7 +65,7 @@
                 <span class="file-icon">
                     <i class="fas fa-upload"></i>
                 </span>
-                <span class="file-label">Choose a file…</span>
+                <span class="file-label">[Required] Choose a file…</span>
             </span>
         </label>
     </div>
@@ -107,27 +111,32 @@
                 <span class="file-icon">
                     <i class="fas fa-upload"></i>
                 </span>
-                <span class="file-label">Choose a file…</span>
+                <span class="file-label">[Required] Choose a file…</span>
             </label>
         </div>
 
     <div class="field is-grouped">
         <div class="control">
-            <button class="button is-link" @click="editItem();tab=''">Edit</button>
+            <button class="button is-link" v-on:click="editItem();tab=''">Edit</button>
         </div>
     </div>
 </div>
 
 
-<!-- Remove Item -->
+<!-- Main Admin Content -->
 <div class="columns is-multiline">
     <div class="column is-one-fifth" v-for="item in items" :key="item.id">
         <div class="card">
             <div class="card-content">
                 <p class="title">{{item.name}}</p>
-                <button class ="button is-success" @click="tab = 'add'">Add</button>
-                <button class ="button is-info" @click="populateItemDetails(item.id); tab = 'edit'">Edit Item</button>
-                <button class ="button is-danger" @click="selectedItemId = item.id; removeItem()">Remove</button>
+            </div>
+            <figure class="image is-4by3 tile">
+                <img :src="'/' + item.image" class="tile has-text-centered menu-item" :alt="item.image" style="object-fit: contain;">
+            </figure>
+            <div class="box tile has-background-light">{{item.description}}</div>
+            <div class="card-footer">
+                <a class ="button is-info card-footer-item" v-on:click="populateItemDetails(item.id); tab = 'edit'">Edit Item</a>
+                <a class ="button is-danger card-footer-item" vclick="selectedItemId = item.id; removeItem()">Remove</a>
             </div>
         </div>
     </div>

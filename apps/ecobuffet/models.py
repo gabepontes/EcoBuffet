@@ -29,7 +29,6 @@ db.define_table(
     "restaurant",
     Field("name", "text"),
     Field("description", "text"),
-    Field("password", "password"),
     Field("authorized_users", "list:reference auth_user", default=lambda: [auth.user_id]),
     Field('created_by', 'reference auth_user', default=lambda: auth.user_id)
 )

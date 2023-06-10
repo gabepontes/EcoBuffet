@@ -68,4 +68,4 @@ As a customer, I want to receive personalized recommendations based on my eating
 secure login (no signup)
 see the customers preferences(with a sidebar for more options)
 edit menu(add,remove,edit, out of stock)
-customization page(logo, background costumization) 
+customization page(logo, background costumization)

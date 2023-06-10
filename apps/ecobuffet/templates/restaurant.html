@@ -1,4 +1,10 @@
 [[extend 'layout.html']]
+<style>
+    .is-selected {
+        background-color: #4A4A4A !important; 
+        color: #ffffff !important;
+    }
+</style>
 <div class="section" id="vue-target" v-cloak>
     <!-- Button for Dark/Light Mode-->
     <div class="field has-addons">
@@ -11,18 +17,11 @@
             </button>
         </div>
     </div>
-    <!-- Button Button to Return to Main Menu-->
+    <!-- Button to Return to Main Menu-->
     <div>
         <a class="button is-normal return-button is-info" href="[[=URL('landing')]]">
             <span class="icon is-small"><i class="fa fa-arrow-left"></i></span>
                 <span>Return to Main Menu</span>
-        </a>
-    </div>
-    <div class="block"></div>
-    <div>
-        <a class="button is-normal return-button is-info" href="[[=URL('dashboard/' + str(restaurant_id))]]">
-            <span class="icon is-small"><i class="fa fa-info-circle"></i></span>
-                <span>Dashboard</span>
         </a>
     </div>
     <h1 class="title has-text-centered restaurant-name">{{restaurant_name}}</h1>
@@ -38,11 +37,16 @@
                                 <!-- Add the "menu-item" class to each item -->
                                 <span class="tile title is-6 level-item menu-item" :class="{'has-text-light': !light_mode}">{{items[idx].name}}</span>
                                 <div class="tile level">
-                                    <a class="button is-success is-light level-item block m-0" @click="like_item(idx)">Like - {{items[idx].likes}}</a>
-                                    <a class="button is-danger is-light level-item block m-0" @click="dislike_item(idx)">Dislike - {{items[idx].dislikes}}</a>
+                                    <a class="button is-success is-light level-item block m-0" 
+                                    :class="{ 'is-selected': is_liked(idx) }"
+                                    @click="like_item(idx)">Like - {{items[idx].likes}}</a>
+                                <a class="button is-danger is-light level-item block m-0" 
+                                    :class="{ 'is-selected': is_disliked(idx) }"
+                                    @click="dislike_item(idx)">Dislike - {{items[idx].dislikes}}</a>                                                                  
                                 </div>
+                                                       
                                 <figure class="image is-4by3 tile">
-                                    <img :src="items[idx].image" class="tile has-text-centered menu-item">{{items[idx].image}}</img>
+                                    <img :src="'/' + items[idx].image" class="tile has-text-centered menu-item" :alt="items[idx].image" style="object-fit: contain;">
                                 </figure>
                                 <div class="box tile" :class="{'has-background-dark': !light_mode}"><span :class="{'has-text-light': !light_mode}">{{items[idx].description}}</span></div>
                             </div>

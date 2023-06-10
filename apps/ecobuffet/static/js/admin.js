@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 restaurants: [],
                 items: [],
                 tab: 'seven', 
+                light_mode: localStorage.getItem("light_mode") == "false",
                 newItem: {
                     name: '',
                     description: '',
@@ -51,7 +52,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     console.log("Cleared available users!")
                 }
             },
-            
+
             add_authorized_user: function(user) {
                 axios.get(add_authorized_user_url, {params: {user: user.id, restaurant_id: this.restaurant_id}})
                     .then((response) => {
@@ -125,7 +126,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 this.selectedItemDescription = item.description;
                 this.selectedItemImage = item.image; 
             },            
-
 
             editItem: function() {
                 if (this.selectedItemId) {

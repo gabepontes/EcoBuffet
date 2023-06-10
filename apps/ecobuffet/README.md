@@ -1,5 +1,5 @@
 # Development Documentation
-EcoBuffet is developed in the following format with py4web + vue.js.
+EcoBuffet is developed in the following format with py4web + vue.js + Bulma.
 Each page should have the following.
 - page.html
 - page.js

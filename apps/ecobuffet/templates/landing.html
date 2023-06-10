@@ -81,17 +81,27 @@
                   </div>
                   <footer class="card-footer" style="border-top:1px solid dimgray" v-if="light_mode == false">
                     <!-- Link to the restaurant's admin page. Dark Mode-->
-                    <p v-if="restaurant.authorized_users.includes(user_id)" class="subtitle is-6 has-text-centered card-footer-item">
+                    <p v-if="restaurant.authorized_users.includes(user_id)" class="card-footer-item">
                       <a :href="'/ecobuffet/admin/' + restaurant.id">
                          Admin
                       </a>
                     </p>
+                    <p v-if="restaurant.authorized_users.includes(user_id)" class="card-footer-item">
+                      <a :href="'/ecobuffet/dashboard/' + restaurant.id">
+                        Dashboard
+                     </a>
+                    </p>
                   </footer>
                   <footer class="card-footer" v-else>
                     <!-- Link to the restaurant's admin page. Light Mode-->
-                    <p v-if="restaurant.authorized_users.includes(user_id)" class="subtitle is-6 has-text-centered card-footer-item">
+                    <p v-if="restaurant.authorized_users.includes(user_id)" class="card-footer-item">
                       <a :href="'/ecobuffet/admin/' + restaurant.id">
                          Admin
+                      </a>
+                    </p>
+                    <p v-if="restaurant.authorized_users.includes(user_id)" class="card-footer-item">
+                      <a :href="'/ecobuffet/dashboard/' + restaurant.id">
+                        Dashboard
                       </a>
                     </p>
                   </footer>

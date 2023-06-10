@@ -38,7 +38,7 @@
         </div>
         <div class="column">
             <div class="box">
-                <h2 class="title" :class="{'has-text-light': !light_mode}">New Orders</h2>
+                <h2 class="title" :class="{'has-text-light': !light_mode}">Most Liked Items</h2>
                 <div v-for="order in orders" :class="{'has-text-light': !light_mode}">
                     {{order.name}}
                 </div>
@@ -47,6 +47,20 @@
         <div class="column">
             <div class="box">
                 <h2 class="title" :class="{'has-text-light': !light_mode}">Customize</h2>
+                <label class="label" :class="{'has-text-light': !light_mode}">Modify Restaurant Name</label>
+                <div class="field">
+                    <p class="control has-icons-right">
+                        <input class="input" type="text" v-model="restaurant_name" placeholder="Name Here">
+                    </p>
+                    <button class="button my-3 is-success" @click="modify_restaurant_name([[=str(restaurant_id)]])">Submit</button>
+                </div>
+                <label class="label" :class="{'has-text-light': !light_mode}">Modify Restaurant Description</label>
+                <div class="field">
+                    <p class="control has-icons-right">
+                        <input class="input" type="text" v-model="restaurant_description" placeholder="Description Here">
+                    </p>
+                    <button class="button my-3 is-success" @click="modify_restaurant_description([[=str(restaurant_id)]])">Submit</button>
+                </div>
             </div>
         </div>
     </div>
@@ -57,6 +71,10 @@
 <script>
     let get_users_url = "[[=XML(get_users_url)]]";
     let get_items_url = "[[=XML(get_items_url)]]";
+    let get_user_likes_url = "[[=XML(get_user_likes_url)]]";
+    let modify_restaurant_name_url = "[[=XML(modify_restaurant_name_url)]]";
+    let modify_restaurant_description_url = "[[=XML(modify_restaurant_description_url)]]";
+    let get_restaurant_name_url = "[[=XML(get_restaurant_name_url)]]";
 </script>
 
 <script src="js/axios.js"></script>
