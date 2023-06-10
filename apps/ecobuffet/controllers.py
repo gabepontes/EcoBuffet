@@ -242,12 +242,13 @@ def add_items(restaurant_id=None):
             image = request.files.image
             if image.filename != '':
                 filename = secure_filename(image.filename)
-                filepath = os.path.join('static', 'uploads', filename)
+                filepath = os.path.join('apps','ecobuffet', 'static','images', filename)
+                filepath2 = os.path.join('ecobuffet', 'static','images', filename)
                 with open(filepath, 'wb') as f:
                     f.write(image.file.read())
         name = request.params.get('name')
         description = request.params.get('description')
-        db.item.insert(name=name, description=description, image=filepath, restaurant_id=restaurant_id)
+        db.item.insert(name=name, description=description, image=filepath2, restaurant_id=restaurant_id)
         return "success"
     else:
         form = Form(db.item, csrf_session=session, formstyle=FormStyleBulma)

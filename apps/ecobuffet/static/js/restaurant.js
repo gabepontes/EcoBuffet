@@ -177,6 +177,18 @@ function init() {
         }
     }
 
+    self.is_liked = function(item_idx) {
+        // Check if the user has liked the item
+        item = self.data.items[item_idx];
+        return self.data.user_likes.some(like_item => like_item.item_name === item.name && like_item.like == "True");
+    };
+    
+    self.is_disliked = function(item_idx) {
+        // Check if the user has disliked the item
+        item = self.data.items[item_idx];
+        return self.data.user_likes.some(like_item => like_item.item_name === item.name && like_item.like == "False");
+    };
+    
     self.page_load = function() {
         if (localStorage.getItem('light_mode') == 'false') {
             let main = document.body;
@@ -214,7 +226,9 @@ function init() {
         display_menu: self.display_menu,
         like_item: self.like_item,
         dislike_item: self.dislike_item,
-        toggle_light_mode: self.toggle_light_mode
+        toggle_light_mode: self.toggle_light_mode,
+        is_liked: self.is_liked,
+        is_disliked: self.is_disliked
     };
 
     // This creates the Vue instance.
